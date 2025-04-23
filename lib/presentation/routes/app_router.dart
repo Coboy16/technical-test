@@ -6,18 +6,13 @@ import 'package:technical_test/presentation/feactures/home/home.dart';
 
 class AppRoutes {
   static const String splash = '/'; // Ruta raíz
-  static const String onboarding = '/onboarding';
-  static const String presentation = '/presentation';
-  static const String dashboard = '/dashboard';
-  static const String notification = '/notification';
-  static const String settings = '/settings';
-  static const String resultLoader = '/result_loader';
+  static const String home = '/home';
 }
 
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: AppRoutes.splash,
-
+    debugLogDiagnostics: true,
     // --- Definición de las rutas ---
     routes: <RouteBase>[
       GoRoute(
@@ -28,8 +23,8 @@ class AppRouter {
         },
       ),
       GoRoute(
-        path: AppRoutes.presentation,
-        name: AppRoutes.presentation,
+        path: AppRoutes.home,
+        name: AppRoutes.home,
         builder: (BuildContext context, GoRouterState state) {
           return const HomeScreen();
         },
