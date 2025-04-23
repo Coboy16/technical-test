@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 // Asegúrate que la ruta a tus recursos sea correcta
-import 'package:technical_test/presentation/resources/resources.dart';
-// Importa Lucide Icons
+import 'package:technical_test/presentation/resources/resources.dart'; // Asumiendo que AppColors y AppTextStyles están aquí
 
 // --- Constantes específicas del Sidebar ---
 const double _sidebarWidth = 270.0;
 const double _logoHeight = 60.0;
 const double _userInfoHeight = 80.0;
-const double _indicatorWidth = 4.0; // Ancho del indicador izquierdo
+const double _indicatorWidth =
+    4.0; // Ancho del indicador izquierdo (Usado implícitamente en el Positioned)
 const double _childIndent = 20.0; // Indentación base para hijos
+const double _parentHorizontalPadding =
+    20.0; // Padding horizontal para items padres
+const double _itemHorizontalPadding =
+    20.0; // Padding horizontal para items hijos (dentro del InkWell)
+const double _itemVerticalPadding = 10.0; // Padding vertical para items
+const double _itemVerticalMargin = 2.0; // Margen vertical entre items
+const double _itemHorizontalMargin = 8.0; // Margen horizontal para items
+const double _borderRadius = 6.0; // Radio de borde para items
 
 // Define el color de selección directamente (o mantenlo en AppColors)
 const Color _selectedItemColor = Colors.white;
 const double _selectedItemBackgroundOpacity =
     0.10; // Opacidad del fondo del item seleccionado
-const double _connectorLineOpacity =
-    0.4; // Opacidad de la línea conectora de hijos
+// const double _connectorLineOpacity = 0.4; // Opacidad de la línea conectora de hijos (Usada en _ExpansionTileChildrenWrapper)
 
 class SidebarWidget extends StatelessWidget {
   const SidebarWidget({super.key});
@@ -27,9 +34,34 @@ class SidebarWidget extends StatelessWidget {
     final String currentRoute =
         'Solicitudes'; // Ejemplo: La ruta/item actualmente seleccionado
 
+    // --- Calcula qué grupo padre está activo ---
+    final List<String> portalEmpleadoRoutes = [
+      'Solicitudes',
+      'Comprobantes de Pago',
+      'Informe de Cursos',
+      'Cola de Aprobación', // Añadir si se descomenta el item
+    ];
+    final List<String> reclutamientoRoutes = [
+      'Subitem Reclutamiento 1', // Asegúrate que coincidan con los títulos o identificadores reales
+      'Subitem Reclutamiento 2',
+    ];
+    final List<String> portalCandidatoRoutes = ['Subitem Candidato'];
+
+    final bool isPortalEmpleadoSelected = portalEmpleadoRoutes.contains(
+      currentRoute,
+    );
+    final bool isReclutamientoSelected = reclutamientoRoutes.contains(
+      currentRoute,
+    );
+    final bool isPortalCandidatoSelected = portalCandidatoRoutes.contains(
+      currentRoute,
+    );
+
     return Container(
       width: _sidebarWidth,
-      color: AppColors.sidebarBackground,
+      color:
+          AppColors
+              .sidebarBackground, // Asegúrate que AppColors.sidebarBackground esté definido
       child: Column(
         children: [
           // 1. Header del Sidebar (Logo)
@@ -48,13 +80,12 @@ class SidebarWidget extends StatelessWidget {
                     title: 'Portal del Empleado',
                     icon: LucideIcons.folder,
                     initiallyExpanded: true, // Empieza expandido por defecto
-                    // Evalúa si algún hijo está seleccionado para mantener el grupo expandido
-                    forceExpanded: [
-                      'Solicitudes',
-                      'Comprobantes de Pago',
-                      'Informe de Cursos',
-                      'Cola de Aprobación',
-                    ].contains(currentRoute),
+                    forceExpanded:
+                        isPortalEmpleadoSelected, // Usa el flag calculado
+                    isParentSelected:
+                        isPortalEmpleadoSelected, // NUEVO: Indica si el padre debe resaltarse
+                    childrenRoutes:
+                        portalEmpleadoRoutes, // Pasa las rutas hijas para la lógica interna si fuera necesario
                     children: [
                       _SidebarItem(
                         title: 'Solicitudes',
@@ -63,6 +94,7 @@ class SidebarWidget extends StatelessWidget {
                         isChild: true, // Indicar que es un hijo
                         onTap: () {
                           /* TODO: Navegar a Solicitudes */
+                          print('Navegar a Solicitudes');
                         },
                       ),
                       _SidebarItem(
@@ -72,6 +104,7 @@ class SidebarWidget extends StatelessWidget {
                         isChild: true,
                         onTap: () {
                           /* TODO: Navegar a Comprobantes */
+                          print('Navegar a Comprobantes');
                         },
                       ),
                       _SidebarItem(
@@ -81,6 +114,7 @@ class SidebarWidget extends StatelessWidget {
                         isChild: true,
                         onTap: () {
                           /* TODO: Navegar a Cursos */
+                          print('Navegar a Cursos');
                         },
                       ),
                       // _SidebarItem(
@@ -90,6 +124,7 @@ class SidebarWidget extends StatelessWidget {
                       //   isChild: true,
                       //   onTap: () {
                       //     /* TODO: Navegar a Aprobación */
+                      //      print('Navegar a Aprobación');
                       //   },
                       // ),
                     ],
@@ -97,13 +132,12 @@ class SidebarWidget extends StatelessWidget {
                   // --- Grupo Reclutamiento ---
                   _SidebarExpansionItem(
                     title: 'Reclutamiento',
-                    icon: LucideIcons.users, // Cambiado icono
-                    initiallyExpanded: false, // Por defecto no expandido
-                    forceExpanded: [
-                      /* Añadir rutas hijas si existen */
-                    ].contains(currentRoute),
+                    icon: LucideIcons.users,
+                    initiallyExpanded: false,
+                    forceExpanded: isReclutamientoSelected,
+                    isParentSelected: isReclutamientoSelected, // NUEVO
+                    childrenRoutes: reclutamientoRoutes,
                     children: const [
-                      // Añadir _SidebarItem hijos aquí si los hubiera
                       _SidebarItem(
                         title: 'Subitem Reclutamiento 1',
                         icon: LucideIcons.userCheck,
@@ -119,13 +153,12 @@ class SidebarWidget extends StatelessWidget {
                   // --- Grupo Portal del Candidato ---
                   _SidebarExpansionItem(
                     title: 'Portal del Candidato',
-                    icon: LucideIcons.contact, // Cambiado icono
+                    icon: LucideIcons.contact,
                     initiallyExpanded: false,
-                    forceExpanded: [
-                      /* Añadir rutas hijas si existen */
-                    ].contains(currentRoute),
+                    forceExpanded: isPortalCandidatoSelected,
+                    isParentSelected: isPortalCandidatoSelected, // NUEVO
+                    childrenRoutes: portalCandidatoRoutes,
                     children: const [
-                      // Añadir _SidebarItem hijos aquí si los hubiera
                       _SidebarItem(
                         title: 'Subitem Candidato',
                         icon: LucideIcons.userSearch,
@@ -139,15 +172,22 @@ class SidebarWidget extends StatelessWidget {
           ),
 
           // 4. Separador
-          const Divider(color: AppColors.dividerColor, height: 1, thickness: 1),
-
+          Divider(
+            color:
+                AppColors.dividerColor?.withOpacity(0.1) ??
+                Colors.white.withOpacity(0.1),
+            height: 1,
+            thickness: 1,
+          ), // Asegúrate que AppColors.dividerColor esté definido
           // 5. Opciones Inferiores
+          // Estos son items normales, no hijos, así que isChild es false (por defecto)
           _SidebarItem(
             title: 'Ayuda y Soporte',
             icon: LucideIcons.circleHelp,
             isSelected: currentRoute == 'Ayuda',
             onTap: () {
               /* TODO: Navegar a Ayuda */
+              print('Navegar a Ayuda');
             },
           ),
           _SidebarItem(
@@ -156,6 +196,7 @@ class SidebarWidget extends StatelessWidget {
             isSelected: currentRoute == 'Configuracion',
             onTap: () {
               /* TODO: Navegar a Configuración */
+              print('Navegar a Configuración');
             },
           ),
           _SidebarItem(
@@ -163,6 +204,7 @@ class SidebarWidget extends StatelessWidget {
             icon: LucideIcons.logOut,
             onTap: () {
               /* TODO: Implementar cierre de sesión */
+              print('Cerrar Sesión');
             },
           ),
           const SizedBox(height: 10), // Pequeño espacio al final
@@ -179,50 +221,50 @@ class _SidebarHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Usar colores definidos o fallback
+    final Color headerBg =
+        AppColors.sidebarHeaderBackground ?? AppColors.primaryPurple;
+    final Color logoText =
+        AppColors.primaryPurple ?? Theme.of(context).primaryColor;
+    final Color headerText = AppColors.sidebarText ?? Colors.white;
+    final Color iconColor = (AppColors.sidebarIcon ?? Colors.white).withOpacity(
+      0.7,
+    );
+
     return Container(
       height: _logoHeight,
-      color: AppColors.sidebarHeaderBackground,
+      color: headerBg,
       alignment: Alignment.centerLeft,
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      padding: const EdgeInsets.symmetric(horizontal: _parentHorizontalPadding),
       child: Row(
         children: [
           // Logo 'HT' en contenedor blanco
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(
-                6,
-              ), // Esquinas ligeramente redondeadas
+              borderRadius: BorderRadius.circular(6),
             ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 4,
-            ), // Ajusta el padding interno
-            child: const Text(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Text(
               'HT',
               style: TextStyle(
-                color: AppColors.primaryPurple, // Color del texto del logo
+                color: logoText,
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),
             ),
           ),
           const SizedBox(width: 12), // Espacio entre logo y texto
-          const Text(
+          Text(
             'Ho-Tech',
             style: TextStyle(
-              color: AppColors.sidebarText,
+              color: headerText,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
           const Spacer(), // Empuja el icono de chevron a la derecha
-          Icon(
-            LucideIcons
-                .chevronLeft, // Icono para colapsar/expandir sidebar (opcional)
-            color: AppColors.sidebarIcon.withOpacity(0.7),
-            size: 20,
-          ),
+          Icon(LucideIcons.chevronLeft, color: iconColor, size: 20),
         ],
       ),
     );
@@ -234,10 +276,14 @@ class _UserInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Añadimos un InkWell para posible acción futura (ir al perfil?)
+    // Usar colores definidos o fallback
+    final Color textColor = AppColors.sidebarText ?? Colors.white;
+    final Color subTextColor = textColor.withOpacity(0.7);
+
     return InkWell(
       onTap: () {
         /* Acción al tocar info de usuario */
+        print('Info Usuario Tapped');
       },
       child: Container(
         height: _userInfoHeight,
@@ -265,7 +311,7 @@ class _UserInfo extends StatelessWidget {
                   Text(
                     'Juan Pérez',
                     style: TextStyle(
-                      color: AppColors.sidebarText,
+                      color: textColor,
                       fontWeight: FontWeight.w600,
                       fontSize: 15,
                     ),
@@ -273,10 +319,7 @@ class _UserInfo extends StatelessWidget {
                   ),
                   Text(
                     'Administrador',
-                    style: TextStyle(
-                      color: AppColors.sidebarText.withOpacity(0.7),
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: subTextColor, fontSize: 12),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -289,97 +332,124 @@ class _UserInfo extends StatelessWidget {
   }
 }
 
+// _SidebarItem no necesita cambios significativos para este requerimiento
 class _SidebarItem extends StatelessWidget {
   final String title;
   final IconData icon;
   final bool isSelected;
-  final bool isChild; // Nuevo: para saber si es hijo y aplicar indentación
+  final bool
+  isChild; // Para saber si aplicar indentación extra y estilo de hijo
   final VoidCallback? onTap;
 
   const _SidebarItem({
+    super.key, // Añadido Key
     required this.title,
     required this.icon,
     this.isSelected = false,
-    this.isChild = false, // Por defecto no es hijo
+    this.isChild = false,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 35),
-      child: Container(
-        // Margen vertical para separar items
-        margin: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
-        decoration: BoxDecoration(
-          color:
-              isSelected
-                  ? const Color.fromARGB(
-                    46,
-                    255,
-                    255,
-                    255,
-                  ).withOpacity(_selectedItemBackgroundOpacity)
-                  : Colors.transparent,
-          borderRadius: BorderRadius.circular(6.0),
-        ),
-        child: Material(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(6.0),
-          child: InkWell(
-            onTap:
-                onTap ??
-                () {
-                  print('Tapped on $title');
-                },
-            borderRadius: BorderRadius.circular(6.0),
-            splashColor: _selectedItemColor.withOpacity(0.1),
-            highlightColor: _selectedItemColor.withOpacity(0.05),
-            child: Padding(
-              // Padding interno del item
-              padding: EdgeInsets.only(
-                left: 20,
-                right: 10.0,
-                top: 10.0,
-                bottom: 10.0,
-              ),
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  // Contenido Principal (Icono y Texto)
-                  Row(
-                    children: [
-                      Icon(icon, color: Colors.white, size: 20),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Text(
-                          title,
-                          style: AppTextStyles.subtitle,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        ),
-                      ),
-                    ],
-                  ),
+    final Color textColor = Colors.white;
+    final Color iconColor = Colors.white;
+    final TextStyle textStyle =
+        AppTextStyles.subtitle ??
+        TextStyle(
+          color: textColor,
+          fontSize: 14,
+        ); // Usar AppTextStyles o fallback
 
-                  // Indicador izquierdo si está seleccionado
-                  if (isSelected)
-                    Positioned(
-                      left: -20,
-                      top: -10,
-                      bottom: -10,
-                      child: Container(
-                        width: 5,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(12),
-                            bottomLeft: Radius.circular(12),
+    // Calcula el padding izquierdo basado en si es hijo o no
+    final double leftPadding =
+        isChild
+            ? (_parentHorizontalPadding + _itemHorizontalPadding)
+            : _parentHorizontalPadding;
+    final double indicatorLeftPos =
+        -leftPadding; // Ajusta la posición del indicador
+
+    return Padding(
+      // Aplicar padding izquierdo para la indentación si es hijo
+      padding: EdgeInsets.only(left: isChild ? _childIndent : 0),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 7),
+        child: Container(
+          // Margen vertical y horizontal para separar items
+          margin: const EdgeInsets.symmetric(
+            vertical: _itemVerticalMargin,
+            horizontal: _itemHorizontalMargin,
+          ),
+          decoration: BoxDecoration(
+            color:
+                isSelected
+                    ? const Color.fromARGB(
+                      46,
+                      255,
+                      255,
+                      255,
+                    ).withOpacity(_selectedItemBackgroundOpacity)
+                    : Colors.transparent,
+            borderRadius: BorderRadius.circular(_borderRadius),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(_borderRadius),
+            child: InkWell(
+              onTap: onTap ?? () => print('Tapped on $title'),
+              borderRadius: BorderRadius.circular(_borderRadius),
+              splashColor: _selectedItemColor.withOpacity(0.1),
+              highlightColor: _selectedItemColor.withOpacity(0.05),
+              child: Padding(
+                // Padding interno del item
+                padding: EdgeInsets.only(
+                  left: _itemHorizontalPadding, // Padding interno consistente
+                  right:
+                      _itemHorizontalPadding /
+                      2, // Menos padding derecho para el icono trailing si hubiera
+                  top: _itemVerticalPadding,
+                  bottom: _itemVerticalPadding,
+                ),
+                child: Stack(
+                  clipBehavior:
+                      Clip.none, // Permite que el indicador se dibuje fuera
+                  children: [
+                    // Contenido Principal (Icono y Texto)
+                    Row(
+                      children: [
+                        Icon(icon, color: iconColor, size: 20),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            title,
+                            style: AppTextStyles.subtitle,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    // Indicador izquierdo si está seleccionado
+                    if (isSelected)
+                      Positioned(
+                        left: -19,
+                        top: -_itemVerticalPadding,
+                        bottom: -_itemVerticalPadding,
+                        child: Container(
+                          width: _indicatorWidth,
+                          decoration: const BoxDecoration(
+                            color: _selectedItemColor, // Color del indicador
+                            borderRadius: BorderRadius.only(
+                              // Radio solo en el lado visible
+                              topLeft: Radius.circular(_borderRadius),
+                              bottomLeft: Radius.circular(_borderRadius),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -389,11 +459,15 @@ class _SidebarItem extends StatelessWidget {
   }
 }
 
+// --- _SidebarExpansionItem MODIFICADO ---
 class _SidebarExpansionItem extends StatefulWidget {
   const _SidebarExpansionItem({
+    super.key, // Añadido Key
     required this.title,
     required this.icon,
     required this.children,
+    required this.childrenRoutes, // Rutas hijas para lógica interna
+    required this.isParentSelected, // NUEVO: Para controlar el resaltado del padre
     this.initiallyExpanded = false,
     this.forceExpanded,
   });
@@ -401,8 +475,10 @@ class _SidebarExpansionItem extends StatefulWidget {
   final String title;
   final IconData icon;
   final List<_SidebarItem> children;
+  final List<String> childrenRoutes;
+  final bool isParentSelected; // Indica si el *padre* debe resaltar
   final bool initiallyExpanded;
-  final bool? forceExpanded;
+  final bool? forceExpanded; // Para mantener expandido si un hijo está activo
 
   @override
   State<_SidebarExpansionItem> createState() => _SidebarExpansionItemState();
@@ -414,6 +490,7 @@ class _SidebarExpansionItemState extends State<_SidebarExpansionItem> {
   @override
   void initState() {
     super.initState();
+    // Prioriza forceExpanded, luego initiallyExpanded
     _isExpanded = widget.forceExpanded ?? widget.initiallyExpanded;
   }
 
@@ -421,83 +498,196 @@ class _SidebarExpansionItemState extends State<_SidebarExpansionItem> {
   @override
   void didUpdateWidget(covariant _SidebarExpansionItem oldWidget) {
     super.didUpdateWidget(oldWidget);
+    // Si forceExpanded tiene un valor y es diferente al estado actual, actualiza la expansión
     if (widget.forceExpanded != null && widget.forceExpanded != _isExpanded) {
       setState(() {
         _isExpanded = widget.forceExpanded!;
       });
     }
+    // Si el estado de selección del padre cambia (aunque no afecte la expansión directamente aquí)
+    if (widget.isParentSelected != oldWidget.isParentSelected) {
+      setState(() {}); // Reconstruye para aplicar el estilo visual
+    }
+  }
+
+  void _toggleExpansion() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      // Sobrescribimos el color del divisor que ExpansionTile añade por defecto
-      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-      child: ExpansionTile(
-        // key: PageStorageKey(widget.title), // Ayuda a mantener estado de expansión en listas largas/scroll
-        initiallyExpanded: _isExpanded,
-        onExpansionChanged:
-            (bool expanding) => setState(() => _isExpanded = expanding),
-        maintainState: true, // Mantiene los hijos en el árbol incluso colapsado
-        leading: Icon(widget.icon, color: Colors.white, size: 20),
-        title: Text(
-          widget.title,
-          style: AppTextStyles.subtitle,
-          overflow: TextOverflow.ellipsis,
+    final Color textColor = Colors.white;
+    final Color iconColor = Colors.white;
+    final TextStyle textStyle =
+        AppTextStyles.subtitle ??
+        TextStyle(
+          color: textColor,
+          fontSize: 14,
+        ); // Usar AppTextStyles o fallback
+    final Color chevronColor = iconColor.withOpacity(0.7);
+
+    // Calcula la posición del indicador para el padre
+    // El padding izquierdo del contenido del padre es _parentHorizontalPadding
+    final double indicatorLeftPos = -_parentHorizontalPadding;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // --- Header Personalizado (similar a _SidebarItem) ---
+        Container(
+          // Margen similar a _SidebarItem para consistencia
+          margin: const EdgeInsets.symmetric(
+            vertical: _itemVerticalMargin,
+            horizontal: _itemHorizontalMargin,
+          ),
+          decoration: BoxDecoration(
+            color:
+                widget
+                        .isParentSelected // Usa el flag isParentSelected
+                    ? _selectedItemColor.withOpacity(
+                      _selectedItemBackgroundOpacity,
+                    )
+                    : Colors.transparent,
+            borderRadius: BorderRadius.circular(_borderRadius),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(_borderRadius),
+            child: InkWell(
+              onTap: _toggleExpansion, // Expande/colapsa al tocar
+              borderRadius: BorderRadius.circular(_borderRadius),
+              splashColor: _selectedItemColor.withOpacity(0.1),
+              highlightColor: _selectedItemColor.withOpacity(0.05),
+              child: Padding(
+                // Padding interno del header del item expandible
+                padding: const EdgeInsets.only(
+                  left:
+                      _parentHorizontalPadding, // Padding izquierdo para el contenido
+                  right:
+                      _parentHorizontalPadding, // Padding derecho para el chevron
+                  top: _itemVerticalPadding,
+                  bottom: _itemVerticalPadding,
+                ),
+                child: Stack(
+                  clipBehavior: Clip.none, // Permite dibujar indicador fuera
+                  children: [
+                    // Contenido Principal (Icono, Texto, Chevron)
+                    Row(
+                      children: [
+                        Icon(widget.icon, color: iconColor, size: 20),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            widget.title,
+                            style: textStyle.copyWith(color: textColor),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 8), // Espacio antes del chevron
+                        Icon(
+                          _isExpanded
+                              ? LucideIcons.chevronUp
+                              : LucideIcons.chevronDown,
+                          size: 18,
+                          color: chevronColor,
+                        ),
+                      ],
+                    ),
+
+                    // Indicador izquierdo si el padre está seleccionado
+                    if (widget.isParentSelected)
+                      Positioned(
+                        left:
+                            indicatorLeftPos, // Usa la posición calculada para padres
+                        top: -_itemVerticalPadding, // Cubre padding vertical
+                        bottom: -_itemVerticalPadding,
+                        child: Container(
+                          width: _indicatorWidth,
+                          decoration: const BoxDecoration(
+                            color: _selectedItemColor,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(_borderRadius),
+                              bottomLeft: Radius.circular(_borderRadius),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
-        // Icono de expansión personalizado
-        trailing: Icon(
-          _isExpanded ? LucideIcons.chevronUp : LucideIcons.chevronDown,
-          size: 18,
-          color: AppColors.sidebarIcon.withOpacity(0.7),
+
+        // --- Hijos (Condicionalmente Visibles) ---
+        // Usamos AnimatedCrossFade para una transición suave (opcional pero agradable)
+        AnimatedCrossFade(
+          firstChild: Container(), // Widget vacío cuando está colapsado
+          secondChild: _ExpansionTileChildrenWrapper(
+            children: widget.children,
+          ), // Los hijos reales
+          crossFadeState:
+              _isExpanded
+                  ? CrossFadeState.showSecond
+                  : CrossFadeState.showFirst,
+          duration: const Duration(
+            milliseconds: 200,
+          ), // Duración de la animación
+          sizeCurve: Curves.easeInOut,
         ),
-        // Controlamos el color del ícono de expansión (aunque usamos trailing)
-        iconColor: AppColors.sidebarIcon.withOpacity(0.7),
-        collapsedIconColor: AppColors.sidebarIcon.withOpacity(0.7),
-        // Añadimos padding al Título, removemos el padding por defecto
-        tilePadding: const EdgeInsets.symmetric(
-          horizontal: 20.0,
-          vertical: 8.0,
-        ), // Ajusta padding vertical
-        //
-        // QUITAMOS el childrenPadding aquí, lo manejaremos nosotros
-        childrenPadding: EdgeInsets.zero,
-        // Usamos clipBehavior para evitar que la línea se corte si el ExpansionTile recorta
-        clipBehavior: Clip.antiAlias,
-        // Quitar formas/bordes por defecto
-        collapsedShape: const Border(),
-        shape: const Border(),
-        // Dibujamos los hijos envueltos para añadir la línea conectora
-        children: [_ExpansionTileChildrenWrapper(children: widget.children)],
-      ),
+
+        // Alternativa sin animación:
+        // if (_isExpanded)
+        //   _ExpansionTileChildrenWrapper(children: widget.children),
+      ],
     );
   }
 }
 
 // Widget interno para dibujar la línea vertical conectora para los hijos
+// (Sin cambios necesarios aquí, pero asegurando que los offsets sean correctos)
 class _ExpansionTileChildrenWrapper extends StatelessWidget {
   final List<Widget> children;
 
-  const _ExpansionTileChildrenWrapper({required this.children});
+  const _ExpansionTileChildrenWrapper({super.key, required this.children});
 
   @override
   Widget build(BuildContext context) {
-    const double iconSize = 20.0;
+    // Asegurarse que estos valores sean consistentes con _SidebarItem y la indentación
+    const double iconSize = 20.0; // Tamaño del icono del hijo (_SidebarItem)
+    const double childItemInternalPaddingLeft =
+        _itemHorizontalPadding; // Padding izquierdo *dentro* del InkWell del hijo
+    const double childTotalIndent =
+        _childIndent; // Indentación total aplicada al hijo (_SidebarItem)
+
+    // La línea debe alinearse con el centro del icono del hijo.
+    // El icono está desplazado por: childTotalIndent (padding exterior) + childItemInternalPaddingLeft (padding interior) + iconSize / 2
     final double lineLeftOffset =
-        _childIndent + 6 + (iconSize / 2) - (_indicatorWidth / 2);
+        -4 +
+        childItemInternalPaddingLeft +
+        (iconSize / 2) -
+        (1.5 / 2); // 1.5 es el ancho de la línea
 
     return Stack(
       children: [
+        // --- Línea Conectora Vertical ---
         Positioned(
           left: lineLeftOffset,
-          top: 0,
-          bottom: 0,
+          top: 0, // Empieza desde arriba
+          bottom: 0, // Termina abajo
           child: Container(
-            width: 1.5,
-            color: const Color.fromARGB(56, 255, 255, 255).withOpacity(0.15),
+            width: 1, // Grosor de la línea
+            // Color y opacidad de la línea
+            color: _selectedItemColor.withOpacity(
+              0.15,
+            ), // Usar _selectedItemColor con baja opacidad para coherencia
           ),
         ),
         // --- Los Hijos ---
+        // El padding izquierdo para la indentación ya se aplica en _SidebarItem
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
