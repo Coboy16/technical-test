@@ -72,6 +72,7 @@ dependencies:
   # Iconos
   cupertino_icons: ^1.0.8
   font_awesome_flutter: ^10.7.0
+  lucide_icons_flutter: ^2.0.6
 
   # Formulario
   form_builder_validators: ^11.0.0

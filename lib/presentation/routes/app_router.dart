@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:technical_test/presentation/feactures/splash/splash.dart';
-import 'package:technical_test/presentation/feactures/home/home.dart';
+import 'package:technical_test/presentation/feactures/requests/requests.dart';
 
 class AppRoutes {
   static const String splash = '/'; // Ruta raíz
-  static const String home = '/home';
+  static const String home = '/requests';
 }
 
 class AppRouter {
@@ -26,7 +26,7 @@ class AppRouter {
         path: AppRoutes.home,
         name: AppRoutes.home,
         builder: (BuildContext context, GoRouterState state) {
-          return const HomeScreen();
+          return const RequestsScreen();
         },
       ),
     ],
