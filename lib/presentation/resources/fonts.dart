@@ -39,6 +39,27 @@ class AppTextStyles {
     letterSpacing: -0.1,
   );
 
+  static TextStyle get titleColum => GoogleFonts.gothicA1(
+    fontSize: 13,
+    fontWeight: FontWeight.w800,
+    color: Colors.black,
+    letterSpacing: -0.1,
+  );
+
+  static TextStyle get titleColumTwo => GoogleFonts.gothicA1(
+    fontSize: 13,
+    fontWeight: FontWeight.w500,
+    color: Colors.black,
+    letterSpacing: -0.1,
+  );
+
+  static TextStyle get subtitleColum => GoogleFonts.gothicA1(
+    fontSize: 13,
+    fontWeight: FontWeight.w500,
+    color: Colors.grey,
+    letterSpacing: -0.1,
+  );
+
   static TextStyle get titlekpi => GoogleFonts.gothicA1(
     fontSize: 15,
     fontWeight: FontWeight.normal,

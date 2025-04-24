@@ -136,15 +136,34 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
                 style:
                     BorderStyle.none, //comentar esta línea para mostrar bordes
               ),
-              columns: const [
-                DataColumn(label: Text('Código')),
-                DataColumn(label: Text('Tipo')),
-                DataColumn(label: Text('Empleado')),
-                DataColumn(label: Text('Período')),
-                DataColumn(label: Text('Empresa/Sucursal')),
-                DataColumn(label: Text('Solicitado:')),
-                DataColumn(label: Text('Estado')),
-                DataColumn(label: Text('Acciones')),
+              columns: [
+                DataColumn(
+                  label: Text('Código', style: AppTextStyles.titleColum),
+                ),
+                DataColumn(
+                  label: Text('Tipo', style: AppTextStyles.titleColum),
+                ),
+                DataColumn(
+                  label: Text('Empleado', style: AppTextStyles.titleColum),
+                ),
+                DataColumn(
+                  label: Text('Período', style: AppTextStyles.titleColum),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Empresa/Sucursal',
+                    style: AppTextStyles.titleColum,
+                  ),
+                ),
+                DataColumn(
+                  label: Text('Solicitado:', style: AppTextStyles.titleColum),
+                ),
+                DataColumn(
+                  label: Text('Estado', style: AppTextStyles.titleColum),
+                ),
+                DataColumn(
+                  label: Text('Acciones', style: AppTextStyles.titleColum),
+                ),
               ],
               rows: requests.map((request) => _buildDataRow(request)).toList(),
             ),
@@ -217,7 +236,7 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
         return null;
       }),
       cells: [
-        DataCell(Text(request.code)),
+        DataCell(Text(request.code, style: AppTextStyles.subtitleColum)),
         DataCell(
           _buildTypeCell(request.typeIcon, request.type, request.typeDate),
         ),
@@ -228,33 +247,33 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
             request.employeeDept,
           ),
         ),
-        DataCell(Text(request.period)),
+        DataCell(Text(request.period, style: AppTextStyles.subtitleColum)),
         DataCell(_buildCompanyCell(request.company, request.branch)),
-        DataCell(Text(request.requestedAgo)),
+        DataCell(
+          Text(request.requestedAgo, style: AppTextStyles.subtitleColum),
+        ),
         DataCell(StatusBadge(status: request.status)),
         DataCell(_buildActionsCell(request)),
       ],
     );
   }
 
+  //vacaciones
   Widget _buildTypeCell(IconData icon, String type, String date) {
     return Row(
       children: [
         CircleAvatar(
-          radius: 16,
+          radius: 18,
           backgroundColor: AppColors.primaryPurple.withOpacity(0.1),
-          child: Icon(icon, size: 16, color: Colors.blueAccent.shade700),
+          child: Icon(icon, size: 18, color: Colors.blueAccent.shade700),
         ),
         const SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(type, style: const TextStyle(fontWeight: FontWeight.w500)),
-            Text(
-              date,
-              style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
-            ),
+            Text(type, style: AppTextStyles.titleColum),
+            Text(date, style: AppTextStyles.subtitleColum),
           ],
         ),
       ],
@@ -266,9 +285,9 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(name, style: const TextStyle(fontWeight: FontWeight.w500)),
-        Text(code, style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
-        Text(dept, style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+        Text(name, style: AppTextStyles.titleColum),
+        Text(code, style: AppTextStyles.subtitleColum),
+        Text(dept, style: AppTextStyles.subtitleColum),
       ],
     );
   }
@@ -278,11 +297,8 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(company, style: const TextStyle(fontWeight: FontWeight.w500)),
-        Text(
-          branch,
-          style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
-        ),
+        Text(company, style: AppTextStyles.titleColumTwo),
+        Text(branch, style: AppTextStyles.subtitleColum),
       ],
     );
   }

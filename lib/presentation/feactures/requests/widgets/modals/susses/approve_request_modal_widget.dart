@@ -146,25 +146,31 @@ class _ApproveRequestModalWidgetState extends State<ApproveRequestModalWidget> {
                 const SizedBox(width: 8),
 
                 // Botón Aprobar
-                ElevatedButton(
-                  onPressed: () {
-                    widget.onApprove(
-                      _commentsController.text.isNotEmpty
-                          ? _commentsController.text
-                          : null,
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00C48C),
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 10,
-                    ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.green,
                   ),
-                  child: const Text(
-                    'Aprobar',
-                    style: TextStyle(color: Colors.white, fontSize: 14),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      widget.onApprove(
+                        _commentsController.text.isNotEmpty
+                            ? _commentsController.text
+                            : null,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
+                    ),
+                    child: const Text(
+                      'Aprobar',
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
                   ),
                 ),
               ],

@@ -95,9 +95,7 @@ class _FilterHeaderWidgetState extends State<FilterHeaderWidget> {
                         style: TextStyle(
                           fontSize: 13,
                           color:
-                              isSelected
-                                  ? AppColors.primaryPurple
-                                  : Colors.grey.shade700,
+                              isSelected ? Colors.black : Colors.grey.shade700,
                           fontWeight:
                               isSelected ? FontWeight.w600 : FontWeight.normal,
                         ),

@@ -175,21 +175,25 @@ class _RejectRequestModalWidgetState extends State<RejectRequestModalWidget> {
                 const SizedBox(width: 8),
 
                 // Botón Rechazar
-                ElevatedButton(
-                  onPressed: _validateAndSubmit,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(
-                      0xFFFF5252,
-                    ), // Rojo para rechazar
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 10,
-                    ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.red,
                   ),
-                  child: const Text(
-                    'Rechazar',
-                    style: TextStyle(color: Colors.white, fontSize: 14),
+                  child: ElevatedButton(
+                    onPressed: _validateAndSubmit,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
+                    ),
+                    child: const Text(
+                      'Rechazar',
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
                   ),
                 ),
               ],
