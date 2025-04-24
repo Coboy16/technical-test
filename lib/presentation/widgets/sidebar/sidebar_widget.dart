@@ -124,7 +124,7 @@ class SidebarWidget extends StatelessWidget {
           ),
           Divider(
             color:
-                AppColors.dividerColor?.withOpacity(0.1) ??
+                AppColors.dividerColor.withOpacity(0.1) ??
                 Colors.white.withOpacity(0.1),
             height: 1,
             thickness: 1,

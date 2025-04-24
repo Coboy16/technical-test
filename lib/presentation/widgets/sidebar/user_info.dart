@@ -3,7 +3,7 @@ import 'package:technical_test/presentation/resources/resources.dart';
 import './constants.dart';
 
 class UserInfo extends StatelessWidget {
-  const UserInfo({Key? key}) : super(key: key);
+  const UserInfo({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:technical_test/presentation/resources/resources.dart';
 
 const double _headerHeight = 60.0;
@@ -27,7 +28,7 @@ class HeaderWidget extends StatelessWidget implements PreferredSizeWidget {
           // Breadcrumbs
           const _Breadcrumbs(),
 
-          const Spacer(), // Empuja los elementos a la derecha
+          const Spacer(),
           // Acciones
           IconButton(
             icon: const Icon(Icons.notifications_none_outlined),
@@ -37,7 +38,7 @@ class HeaderWidget extends StatelessWidget implements PreferredSizeWidget {
           ),
           const SizedBox(width: 8),
           IconButton(
-            icon: const Icon(Icons.nightlight_round), // Icono de luna
+            icon: const Icon(Icons.nightlight_round),
             color: AppColors.headerIcons,
             tooltip: 'Modo Oscuro',
             onPressed: () {},
@@ -45,8 +46,7 @@ class HeaderWidget extends StatelessWidget implements PreferredSizeWidget {
           const SizedBox(width: 16),
           const CircleAvatar(
             radius: 18,
-            backgroundColor:
-                Colors.deepPurpleAccent, // Mismo color que en sidebar o similar
+            backgroundColor: Colors.deepPurpleAccent,
             child: Text(
               'JP',
               style: TextStyle(

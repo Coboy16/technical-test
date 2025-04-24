@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:technical_test/presentation/feactures/requests/views/views.dart';
 import 'package:technical_test/presentation/widgets/sidebar/sidebar_widget.dart';
 import 'package:technical_test/presentation/widgets/widgets.dart';
 
@@ -26,24 +27,7 @@ class RequestsScreen extends StatelessWidget {
                 const HeaderWidget(),
 
                 // --- Área de contenido principal (Aquí irá el resto) ---
-                Expanded(
-                  child: SingleChildScrollView(
-                    // Para permitir scroll si el contenido es largo
-                    padding: const EdgeInsets.all(
-                      24.0,
-                    ), // Añade padding general al contenido
-                    child: Center(
-                      child: Column(
-                        // Aquí irá el contenido específico de "Solicitudes"
-                        // (Cards de resumen, filtros, tabla, etc.)
-                        children: [
-                          Text('Contenido Principal de Solicitudes Aquí'),
-                          // TODO: Añadir el resto de la interfaz (cards, filtros, tabla)
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                Expanded(child: RequestsContentView()),
               ],
             ),
           ),

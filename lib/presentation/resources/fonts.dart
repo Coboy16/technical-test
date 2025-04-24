@@ -22,6 +22,19 @@ class AppTextStyles {
     fontWeight: FontWeight.normal,
     color: Colors.white,
   );
+  //title solicitudes
+  static TextStyle get titleSolicitudes => GoogleFonts.gothicA1(
+    fontSize: 20,
+    fontWeight: FontWeight.w800,
+    color: Colors.black,
+    letterSpacing: -0.1,
+  );
+  static TextStyle get subtitleSolicitudes => GoogleFonts.gothicA1(
+    fontSize: 14,
+    fontWeight: FontWeight.normal,
+    color: Colors.grey,
+    letterSpacing: -0.1,
+  );
 
   static TextStyle get itensGender => GoogleFonts.poppins(
     fontSize: 15,
