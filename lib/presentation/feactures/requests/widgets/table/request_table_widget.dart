@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:technical_test/presentation/feactures/requests/blocs/blocs.dart';
 import 'package:technical_test/presentation/feactures/requests/temp/mock_data.dart';
 import 'package:technical_test/presentation/feactures/requests/utils/utils.dart';
 import 'package:technical_test/presentation/feactures/requests/widgets/widgets.dart';
@@ -17,17 +19,11 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
   int _selectedTabIndex = 0; // 0: Todas, 1: Pendientes, etc.
   bool _isListView = true;
 
-  // Lista filtrada de solicitudes (sin cambios)
-  List<RequestData> get _filteredRequests {
-    if (_selectedTabIndex == 0) {
-      return dummyRequests; // Todas
-    } else if (_selectedTabIndex == 1) {
-      return dummyRequests.where((req) => req.status == 'Pendiente').toList();
-    } else if (_selectedTabIndex == 2) {
-      return dummyRequests.where((req) => req.status == 'Aprobada').toList();
-    } else {
-      return dummyRequests.where((req) => req.status == 'Rechazada').toList();
-    }
+  @override
+  void initState() {
+    super.initState();
+    // Cargar las solicitudes iniciales en el bloc
+    context.read<RequestFilterBloc>().add(LoadInitialRequests(dummyRequests));
   }
 
   @override
@@ -65,6 +61,10 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
                     setState(() {
                       _selectedTabIndex = index;
                     });
+                    // Enviar evento de cambio de tab al bloc
+                    context.read<RequestFilterBloc>().add(
+                      StatusTabChanged(index),
+                    );
                   },
                   onViewChanged: (isListView) {
                     setState(() {
@@ -78,21 +78,29 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
             ),
           ),
 
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              // Solo redondear esquinas inferiores
-              bottomLeft: Radius.circular(borderRadiusValue),
-              bottomRight: Radius.circular(borderRadiusValue),
-            ),
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(
-                16.0,
-                16.0,
-                16.0,
-                16.0,
-              ), // Padding para tabla/grid
-              child: _isListView ? _buildDataTableView() : _buildCardsView(),
-            ),
+          // Usamos BlocBuilder para reconstruir esta parte cuando cambia el estado del filtro
+          BlocBuilder<RequestFilterBloc, RequestFilterState>(
+            builder: (context, state) {
+              return ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  // Solo redondear esquinas inferiores
+                  bottomLeft: Radius.circular(borderRadiusValue),
+                  bottomRight: Radius.circular(borderRadiusValue),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(
+                    16.0,
+                    16.0,
+                    16.0,
+                    16.0,
+                  ), // Padding para tabla/grid
+                  child:
+                      _isListView
+                          ? _buildDataTableView(state.filteredRequests)
+                          : _buildCardsView(state.filteredRequests),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -100,12 +108,11 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
   }
 
   // --- Vista de Tabla ---
-  Widget _buildDataTableView() {
+  Widget _buildDataTableView(List<RequestData> requests) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-
           child: ConstrainedBox(
             constraints: BoxConstraints(minWidth: constraints.maxWidth),
             child: DataTable(
@@ -139,10 +146,7 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
                 DataColumn(label: Text('Estado')),
                 DataColumn(label: Text('Acciones')),
               ],
-              rows:
-                  _filteredRequests
-                      .map((request) => _buildDataRow(request))
-                      .toList(),
+              rows: requests.map((request) => _buildDataRow(request)).toList(),
             ),
           ),
         );
@@ -151,7 +155,7 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
   }
 
   // --- Vista de Tarjetas (Grid/Lista) ---
-  Widget _buildCardsView() {
+  Widget _buildCardsView(List<RequestData> requests) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final double availableWidth = constraints.maxWidth;
@@ -173,10 +177,10 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
                 // childAspectRatio: 1.0, // Ajusta si es necesario
                 mainAxisExtent: 380, // Altura fija de las tarjetas
               ),
-              itemCount: _filteredRequests.length,
+              itemCount: requests.length,
               itemBuilder: (context, index) {
                 return RequestCard(
-                  request: _filteredRequests[index],
+                  request: requests[index],
                   onViewDetails: () {},
                   onActionSelected: (action) {},
                 );
@@ -185,14 +189,14 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
             : ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: _filteredRequests.length,
+              itemCount: requests.length,
               itemBuilder: (context, index) {
                 return Padding(
                   padding: EdgeInsets.only(
-                    bottom: index == _filteredRequests.length - 1 ? 0 : 16.0,
+                    bottom: index == requests.length - 1 ? 0 : 16.0,
                   ),
                   child: RequestCard(
-                    request: _filteredRequests[index],
+                    request: requests[index],
                     onViewDetails: () {
                       /* TODO */
                     },
@@ -290,7 +294,6 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
           onTap: () {
             /* TODO: Ver detalles */
           },
-
           child: Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
@@ -404,8 +407,6 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
       ],
     );
   }
-
-  //TODO: mejorar
 
   // Helper para construir los items del menú
   PopupMenuItem<String> _buildMenuItem({

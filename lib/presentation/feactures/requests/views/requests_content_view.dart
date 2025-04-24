@@ -14,7 +14,7 @@ class RequestsContentView extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.all(24.0),
         children: const [
-          // 1. Sección Superior (Volver, Título, Botón Nuevo)
+          // 1. Sección Superior
           TopSection(),
           SizedBox(height: 10),
 

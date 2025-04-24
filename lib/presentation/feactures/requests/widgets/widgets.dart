@@ -17,4 +17,7 @@ export './modals/susses/approve_request_modal_widget.dart';
 export './modals/susses/confirm_action_modal_widget.dart';
 export './modals/susses/success_result_modal_widget.dart';
 
+//filters
+export 'filters/custom_dropdown_widget.dart';
+
 export './status_bage_widget.dart';
