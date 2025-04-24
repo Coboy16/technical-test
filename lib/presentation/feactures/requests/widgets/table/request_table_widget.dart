@@ -16,7 +16,7 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
   int _selectedTabIndex = 0; // 0: Todas, 1: Pendientes, etc.
   bool _isListView = true;
 
-  // Lista filtrada de solicitudes
+  // Lista filtrada de solicitudes (sin cambios)
   List<RequestData> get _filteredRequests {
     if (_selectedTabIndex == 0) {
       return dummyRequests; // Todas
@@ -31,18 +31,15 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
 
   @override
   Widget build(BuildContext context) {
-    // Obtener la altura disponible de la pantalla
-    final screenHeight = MediaQuery.of(context).size.height;
-    // Calcular una altura razonable para el contenedor
-    final containerHeight =
-        screenHeight * 0.7; // Usar 70% de la altura de la pantalla
+    const double borderRadiusValue = 8.0;
+    const BorderRadius borderRadius = BorderRadius.all(
+      Radius.circular(borderRadiusValue),
+    );
 
     return Container(
-      height:
-          containerHeight, // Establecer una altura fija al contenedor principal
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: borderRadius,
         border: Border.all(color: Colors.grey.shade200, width: 1),
       ),
       child: Column(
@@ -50,7 +47,7 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
         children: [
           // Encabezado y filtros (siempre visibles)
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -59,7 +56,6 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
                   style: AppTextStyles.titleSolicitudes,
                 ),
                 const SizedBox(height: 16),
-
                 // Filtros y cambio de vista
                 FilterHeaderWidget(
                   initialTabIndex: _selectedTabIndex,
@@ -74,68 +70,75 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
                       _isListView = isListView;
                     });
                   },
-                  onFilterByDate: () {
-                    // TODO: Implementar filtro por fecha
-                  },
-                  onDownload: () {
-                    // TODO: Implementar descarga
-                  },
+                  onFilterByDate: () {},
+                  onDownload: () {},
                 ),
               ],
             ),
           ),
 
-          const Divider(height: 1, thickness: 1),
-
-          // Ahora Expanded funcionará porque el contenedor principal tiene altura fija
-          Expanded(
-            child: _isListView ? _buildDataTableView() : _buildCardsView(),
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              // Solo redondear esquinas inferiores
+              bottomLeft: Radius.circular(borderRadiusValue),
+              bottomRight: Radius.circular(borderRadiusValue),
+            ),
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(
+                16.0,
+                16.0,
+                16.0,
+                16.0,
+              ), // Padding para tabla/grid
+              child: _isListView ? _buildDataTableView() : _buildCardsView(),
+            ),
           ),
         ],
       ),
     );
   }
 
-  // Vista de tabla con scroll
+  // --- Vista de Tabla ---
   Widget _buildDataTableView() {
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            columnSpacing: 20.0,
-            headingRowHeight: 40.0,
-            dataRowMinHeight: 58.0,
-            dataRowMaxHeight: 68.0,
-            headingRowColor: MaterialStateProperty.all(Colors.grey.shade50),
-            headingTextStyle: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Colors.grey.shade700,
-              fontSize: 13,
-            ),
-            dataTextStyle: const TextStyle(fontSize: 13, color: Colors.black87),
-            columns: const [
-              DataColumn(label: Text('Código')),
-              DataColumn(label: Text('Tipo')),
-              DataColumn(label: Text('Empleado')),
-              DataColumn(label: Text('Período')),
-              DataColumn(label: Text('Empresa/Sucursal')),
-              DataColumn(label: Text('Solicitado:')),
-              DataColumn(label: Text('Estado')),
-              DataColumn(label: Text('Acciones')),
-            ],
-            rows:
-                _filteredRequests
-                    .map((request) => _buildDataRow(request))
-                    .toList(),
-          ),
+      scrollDirection: Axis.horizontal,
+      child: DataTable(
+        columnSpacing: 25.0,
+        headingRowHeight: 40.0,
+        dataRowMinHeight: 58.0,
+        dataRowMaxHeight: 68.0,
+        headingRowColor: WidgetStateProperty.all(
+          Colors.grey.shade50,
+        ), // Fondo cabecera
+        headingTextStyle: TextStyle(
+          fontWeight: FontWeight.w600,
+          color: Colors.grey.shade700,
+          fontSize: 13,
         ),
+        dataTextStyle: const TextStyle(fontSize: 13, color: Colors.black),
+        border: TableBorder.all(
+          color: Colors.grey.shade200,
+          width: 1,
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          style: BorderStyle.none, //comentar esta línea para mostrar bordes
+        ),
+        columns: const [
+          DataColumn(label: Text('Código')),
+          DataColumn(label: Text('Tipo')),
+          DataColumn(label: Text('Empleado')),
+          DataColumn(label: Text('Período')),
+          DataColumn(label: Text('Empresa/Sucursal')),
+          DataColumn(label: Text('Solicitado:')),
+          DataColumn(label: Text('Estado')),
+          DataColumn(label: Text('Acciones')),
+        ],
+        rows:
+            _filteredRequests.map((request) => _buildDataRow(request)).toList(),
       ),
     );
   }
 
-  // Vista de tarjetas (grid) con scroll
+  // --- Vista de Tarjetas (Grid/Lista) ---
   Widget _buildCardsView() {
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -147,52 +150,56 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
                 ? 2
                 : 1;
 
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child:
-              crossAxisCount > 1
-                  ? GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: crossAxisCount,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      childAspectRatio: 0.8,
-                      mainAxisExtent: 380,
-                    ),
-                    itemCount: _filteredRequests.length,
-                    itemBuilder: (context, index) {
-                      return RequestCard(
-                        request: _filteredRequests[index],
-                        onViewDetails: () {
-                          // TODO: Implementar navegación a detalles
-                        },
-                        onActionSelected: (action) {
-                          // TODO: Manejar acción seleccionada
-                        },
-                      );
+        return crossAxisCount > 1
+            ? GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                // childAspectRatio: 1.0, // Ajusta si es necesario
+                mainAxisExtent: 380, // Altura fija de las tarjetas
+              ),
+              itemCount: _filteredRequests.length,
+              itemBuilder: (context, index) {
+                return RequestCard(
+                  request: _filteredRequests[index],
+                  onViewDetails: () {},
+                  onActionSelected: (action) {},
+                );
+              },
+            )
+            : ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _filteredRequests.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: EdgeInsets.only(
+                    bottom: index == _filteredRequests.length - 1 ? 0 : 16.0,
+                  ),
+                  child: RequestCard(
+                    request: _filteredRequests[index],
+                    onViewDetails: () {
+                      /* TODO */
                     },
-                  )
-                  : ListView.builder(
-                    itemCount: _filteredRequests.length,
-                    itemBuilder: (context, index) {
-                      return RequestCard(
-                        request: _filteredRequests[index],
-                        onViewDetails: () {
-                          // TODO: Implementar navegación a detalles
-                        },
-                        onActionSelected: (action) {
-                          // TODO: Manejar acción seleccionada
-                        },
-                      );
+                    onActionSelected: (action) {
+                      /* TODO */
                     },
                   ),
-        );
+                );
+              },
+            );
       },
     );
   }
 
   DataRow _buildDataRow(RequestData request) {
     return DataRow(
+      color: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+        return null;
+      }),
       cells: [
         DataCell(Text(request.code)),
         DataCell(
@@ -269,7 +276,7 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
       children: [
         TextButton(
           onPressed: () {
-            // TODO: Ver detalles
+            /* TODO: Ver detalles */
           },
           style: TextButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -294,7 +301,6 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
           ),
         ),
         const SizedBox(width: 8),
-        // Botón de menú contextual
         PopupMenuButton<String>(
           icon: Container(
             padding: const EdgeInsets.all(6),
@@ -329,21 +335,7 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
                 ),
               ],
           onSelected: (value) {
-            // Manejar la acción seleccionada
-            switch (value) {
-              case 'Editar solicitud':
-                // TODO: Implementar edición
-                break;
-              case 'Descargar PDF':
-                // TODO: Implementar descarga
-                break;
-              case 'Aprobar solicitud':
-                // TODO: Implementar aprobación
-                break;
-              case 'Rechazar solicitud':
-                // TODO: Implementar rechazo
-                break;
-            }
+            /* TODO: Manejar acción */
           },
           offset: const Offset(0, 30),
           elevation: 2,
@@ -352,7 +344,7 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
     );
   }
 
-  // Helper para construir los items del menú
+  // Helper para construir los items del menú (sin cambios)
   PopupMenuItem<String> _buildMenuItem({
     required IconData icon,
     required String text,

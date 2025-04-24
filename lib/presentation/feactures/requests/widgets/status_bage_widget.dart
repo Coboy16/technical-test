@@ -35,7 +35,9 @@ class StatusBadge extends StatelessWidget {
         color: textColor,
       ),
       backgroundColor: backgroundColor,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      labelPadding: EdgeInsets.all(0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       side: BorderSide.none,
       visualDensity: VisualDensity.compact,
     );
