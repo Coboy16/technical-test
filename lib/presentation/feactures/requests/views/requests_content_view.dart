@@ -22,10 +22,10 @@ class RequestsContentView extends StatelessWidget {
         children: const [
           // 1. Sección Superior (Volver, Título, Botón Nuevo)
           TopSection(),
-          SizedBox(height: 20),
+          SizedBox(height: 10),
 
           // 2. Barra de Filtros/Búsqueda
-          _FilterBar(),
+          FilterBar(),
           SizedBox(height: 20),
 
           // 3. Tarjetas de Resumen
@@ -44,92 +44,6 @@ class RequestsContentView extends StatelessWidget {
 }
 
 // --- Widgets Internos de la Vista de Contenido ---
-
-class _FilterBar extends StatelessWidget {
-  const _FilterBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8.0),
-        border: Border.all(color: Colors.grey.shade300, width: 1),
-      ),
-      child: Row(
-        children: [
-          // Campo de Búsqueda
-          Expanded(
-            flex: 2, // Darle más espacio
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Buscar solicitudes...',
-                hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 14),
-                prefixIcon: Icon(
-                  LucideIcons.search,
-                  size: 18,
-                  color: Colors.grey.shade600,
-                ),
-                border: InputBorder.none, // Quitar borde por defecto
-                isDense: true, // Hacerlo más compacto
-                contentPadding: const EdgeInsets.symmetric(vertical: 10),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-
-          // Dropdown Tipo Solicitud (Placeholder)
-          Expanded(
-            flex: 1,
-            child: _buildDropdownPlaceholder(context, 'Todas las solicitudes'),
-          ),
-          const SizedBox(width: 16),
-
-          // Dropdown Estado (Placeholder)
-          Expanded(
-            flex: 1,
-            child: _buildDropdownPlaceholder(context, 'Todos los estados'),
-          ),
-          const SizedBox(width: 16),
-
-          // Botón de Filtros Adicionales
-          IconButton(
-            icon: const Icon(LucideIcons.slidersHorizontal, size: 20),
-            color: Colors.grey.shade600,
-            tooltip: 'Más filtros',
-            onPressed: () {
-              // TODO: Implementar lógica para mostrar más filtros
-            },
-            splashRadius: 20,
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Helper para crear un dropdown placeholder visualmente
-  Widget _buildDropdownPlaceholder(BuildContext context, String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        // Podría tener un borde sutil si se desea
-        // border: Border.all(color: Colors.grey.shade300),
-        // borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            text,
-            style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
-          ),
-          const Icon(LucideIcons.chevronDown, size: 16, color: Colors.grey),
-        ],
-      ),
-    );
-  }
-}
 
 class _SummaryCards extends StatelessWidget {
   const _SummaryCards();

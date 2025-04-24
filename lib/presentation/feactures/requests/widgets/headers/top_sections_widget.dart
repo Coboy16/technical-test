@@ -31,7 +31,7 @@ class TopSection extends StatelessWidget {
         const Spacer(),
         SizedBox(
           width: 180,
-          height: 40,
+          height: 42,
           child: ElevatedButton.icon(
             icon: const Icon(LucideIcons.plus, size: 18),
             label: const Text('Nueva Solicitud'),
