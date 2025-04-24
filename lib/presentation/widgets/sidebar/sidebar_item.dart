@@ -10,13 +10,13 @@ class SidebarItem extends StatelessWidget {
   final VoidCallback? onTap;
 
   const SidebarItem({
-    Key? key,
+    super.key,
     required this.title,
     required this.icon,
     this.isSelected = false,
     this.isChild = false,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

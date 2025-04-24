@@ -12,6 +12,7 @@ const double itemVerticalPadding = 10.0;
 const double itemVerticalMargin = 2.0;
 const double itemHorizontalMargin = 8.0;
 const double borderRadius = 6.0;
+const double collapsedSidebarWidth = 60.0;
 
 // Colores
 const Color selectedItemColor = Colors.white;

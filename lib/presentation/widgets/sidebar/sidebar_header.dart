@@ -3,50 +3,131 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:technical_test/presentation/resources/resources.dart';
 import './constants.dart';
 
-class SidebarHeader extends StatelessWidget {
-  const SidebarHeader({super.key});
+class SidebarHeaderWithToggle extends StatelessWidget {
+  final bool isExpanded;
+  final VoidCallback onToggle;
+  final Animation<double> widthAnimation;
+
+  const SidebarHeaderWithToggle({
+    super.key,
+    required this.isExpanded,
+    required this.onToggle,
+    required this.widthAnimation,
+  });
 
   @override
   Widget build(BuildContext context) {
     final Color headerBg = AppColors.sidebarHeaderBackground;
     final Color logoText = AppColors.primaryPurple;
     final Color headerText = AppColors.sidebarText;
-    final Color iconColor = (AppColors.sidebarIcon).withOpacity(0.7);
+    final Color iconColor = AppColors.sidebarIcon.withOpacity(0.7);
 
     return Container(
       height: logoHeight,
       color: headerBg,
       alignment: Alignment.centerLeft,
-      padding: const EdgeInsets.symmetric(horizontal: parentHorizontalPadding),
-      child: Row(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: Text(
-              'HT',
-              style: TextStyle(
-                color: logoText,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Text(
-            'Ho-Tech',
-            style: TextStyle(
-              color: headerText,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const Spacer(),
-          Icon(LucideIcons.chevronLeft, color: iconColor, size: 20),
-        ],
+      padding: EdgeInsets.symmetric(
+        horizontal:
+            (parentHorizontalPadding / 2) +
+            (parentHorizontalPadding /
+                    2 *
+                    (widthAnimation.value - collapsedSidebarWidth) /
+                    (sidebarWidth - collapsedSidebarWidth))
+                .clamp(
+                  0.0,
+                  parentHorizontalPadding / 2,
+                ), // Animate padding safely
+      ),
+      // IMPORTANT: Clip the content of the header
+      child: ClipRect(
+        child: AnimatedSwitcher(
+          duration: const Duration(
+            milliseconds: 150,
+          ), // Faster switch for header
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+          layoutBuilder: (currentChild, previousChildren) {
+            return Stack(
+              alignment: Alignment.centerLeft,
+              children: <Widget>[
+                ...previousChildren.map(
+                  (child) => Positioned(child: child),
+                ), // Use positioned to prevent layout shifts in stack
+                if (currentChild != null) currentChild,
+              ],
+            );
+          },
+          child:
+              isExpanded
+                  ? Row(
+                    key: const ValueKey('expanded_header'),
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 6,
+                        ),
+                        child: Text(
+                          'HT',
+                          style: TextStyle(
+                            color: logoText,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Flexible(
+                        child: Text(
+                          'Ho-Tech',
+                          style: TextStyle(
+                            color: headerText,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
+                        ),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        icon: Icon(
+                          LucideIcons.chevronLeft,
+                          color: iconColor,
+                          size: 20,
+                        ),
+                        onPressed: onToggle,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        tooltip: 'Collapse Sidebar',
+                      ),
+                    ],
+                  )
+                  : Container(
+                    key: const ValueKey('collapsed_header'),
+                    alignment: Alignment.center,
+                    // Ensure collapsed button takes minimal but defined space
+                    width:
+                        collapsedSidebarWidth -
+                        (parentHorizontalPadding), // Account for padding
+                    child: IconButton(
+                      icon: Icon(
+                        LucideIcons.chevronRight,
+                        color: iconColor,
+                        size: 20,
+                      ),
+                      onPressed: onToggle,
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      tooltip: 'Expand Sidebar',
+                    ),
+                  ),
+        ),
       ),
     );
   }
