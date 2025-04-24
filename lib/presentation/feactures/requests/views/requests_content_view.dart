@@ -10,13 +10,10 @@ class RequestsContentView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Usamos un ListView en lugar de SingleChildScrollView + Column
-    // para potencialmente mejorar el rendimiento si hay muchos widgets,
-    // aunque para esta cantidad, Column estaría bien también.
     return Container(
       width: double.infinity,
       height: double.infinity,
-      color: const Color.fromARGB(101, 245, 245, 245),
+      color: Colors.white30,
       child: ListView(
         padding: const EdgeInsets.all(24.0), // Padding general del contenido
         children: const [
@@ -29,8 +26,9 @@ class RequestsContentView extends StatelessWidget {
           SizedBox(height: 20),
 
           // 3. Tarjetas de Resumen
-          _SummaryCards(),
-          SizedBox(height: 30), // Más espacio antes de la tabla
+          SummaryCards(),
+          SizedBox(height: 20),
+
           // 4. Área de la Tabla de Solicitudes
           _RequestsTableArea(),
           SizedBox(height: 20),
@@ -44,135 +42,6 @@ class RequestsContentView extends StatelessWidget {
 }
 
 // --- Widgets Internos de la Vista de Contenido ---
-
-class _SummaryCards extends StatelessWidget {
-  const _SummaryCards();
-
-  @override
-  Widget build(BuildContext context) {
-    // Usamos Wrap para que las tarjetas se ajusten si no caben en una fila
-    return Wrap(
-      spacing: 16.0, // Espacio horizontal entre tarjetas
-      runSpacing: 16.0, // Espacio vertical entre filas de tarjetas
-      children: [
-        _SummaryCard(
-          title: 'Total Solicitudes',
-          count: '124',
-          icon: LucideIcons.files,
-          iconColor: Colors.blue.shade700,
-          iconBackgroundColor: Colors.blue.shade100,
-        ),
-        _SummaryCard(
-          title: 'Pendientes',
-          count: '28',
-          icon: LucideIcons.clock,
-          iconColor: Colors.orange.shade700,
-          iconBackgroundColor: Colors.orange.shade100,
-        ),
-        _SummaryCard(
-          title: 'Aprobadas',
-          count: '86',
-          icon: LucideIcons.circleCheck,
-          iconColor: Colors.green.shade700,
-          iconBackgroundColor: Colors.green.shade100,
-        ),
-        _SummaryCard(
-          title: 'Rechazadas',
-          count: '10',
-          icon: LucideIcons.triangleAlert,
-          iconColor: Colors.red.shade700,
-          iconBackgroundColor: Colors.red.shade100,
-        ),
-      ],
-    );
-  }
-}
-
-class _SummaryCard extends StatelessWidget {
-  final String title;
-  final String count;
-  final IconData icon;
-  final Color iconColor;
-  final Color iconBackgroundColor;
-
-  const _SummaryCard({
-    required this.title,
-    required this.count,
-    required this.icon,
-    required this.iconColor,
-    required this.iconBackgroundColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    // Usamos LayoutBuilder para que la tarjeta pueda decidir su ancho
-    // basado en el espacio disponible (útil dentro de Wrap)
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Intentar que 4 tarjetas quepan, restando el espacio entre ellas
-        final idealWidth = (constraints.maxWidth - 16.0 * 3) / 4;
-        // Ancho mínimo para que no se vea mal
-        final minWidth = 180.0;
-
-        return Container(
-          width:
-              idealWidth < minWidth
-                  ? constraints.maxWidth
-                  : idealWidth, // Ancho adaptable
-          padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8.0),
-            border: Border.all(color: Colors.grey.shade200, width: 1),
-            // boxShadow: [ // Sombra sutil opcional
-            //   BoxShadow(
-            //     color: Colors.grey.withOpacity(0.1),
-            //     spreadRadius: 1,
-            //     blurRadius: 3,
-            //     offset: const Offset(0, 1),
-            //   ),
-            // ],
-          ),
-          child: Row(
-            children: [
-              // Columna de Texto
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      title,
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey.shade600,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      count,
-                      style: textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 16),
-              // Icono
-              CircleAvatar(
-                radius: 22,
-                backgroundColor: iconBackgroundColor,
-                child: Icon(icon, size: 20, color: iconColor),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
 
 class _RequestsTableArea extends StatefulWidget {
   const _RequestsTableArea();

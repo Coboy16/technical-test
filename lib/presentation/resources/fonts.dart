@@ -22,6 +22,7 @@ class AppTextStyles {
     fontWeight: FontWeight.normal,
     color: Colors.white,
   );
+
   //title solicitudes
   static TextStyle get titleSolicitudes => GoogleFonts.gothicA1(
     fontSize: 20,
@@ -29,10 +30,19 @@ class AppTextStyles {
     color: Colors.black,
     letterSpacing: -0.1,
   );
+
+  //subtitel
   static TextStyle get subtitleSolicitudes => GoogleFonts.gothicA1(
     fontSize: 14,
     fontWeight: FontWeight.normal,
     color: Colors.grey,
+    letterSpacing: -0.1,
+  );
+
+  static TextStyle get titlekpi => GoogleFonts.gothicA1(
+    fontSize: 15,
+    fontWeight: FontWeight.normal,
+    color: Colors.grey.shade600,
     letterSpacing: -0.1,
   );
 
