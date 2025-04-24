@@ -10,7 +10,7 @@ class RequestsContentView extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      color: Colors.white30,
+      color: const Color.fromARGB(112, 255, 255, 255),
       child: ListView(
         padding: const EdgeInsets.all(24.0),
         children: const [

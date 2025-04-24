@@ -100,41 +100,52 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
 
   // --- Vista de Tabla ---
   Widget _buildDataTableView() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: DataTable(
-        columnSpacing: 25.0,
-        headingRowHeight: 40.0,
-        dataRowMinHeight: 58.0,
-        dataRowMaxHeight: 68.0,
-        headingRowColor: WidgetStateProperty.all(
-          Colors.grey.shade50,
-        ), // Fondo cabecera
-        headingTextStyle: TextStyle(
-          fontWeight: FontWeight.w600,
-          color: Colors.grey.shade700,
-          fontSize: 13,
-        ),
-        dataTextStyle: const TextStyle(fontSize: 13, color: Colors.black),
-        border: TableBorder.all(
-          color: Colors.grey.shade200,
-          width: 1,
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-          style: BorderStyle.none, //comentar esta línea para mostrar bordes
-        ),
-        columns: const [
-          DataColumn(label: Text('Código')),
-          DataColumn(label: Text('Tipo')),
-          DataColumn(label: Text('Empleado')),
-          DataColumn(label: Text('Período')),
-          DataColumn(label: Text('Empresa/Sucursal')),
-          DataColumn(label: Text('Solicitado:')),
-          DataColumn(label: Text('Estado')),
-          DataColumn(label: Text('Acciones')),
-        ],
-        rows:
-            _filteredRequests.map((request) => _buildDataRow(request)).toList(),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: constraints.maxWidth),
+            child: DataTable(
+              columnSpacing: 25.0,
+              headingRowHeight: 40.0,
+              dataRowMinHeight: 58.0,
+              dataRowMaxHeight: 68.0,
+              headingRowColor: WidgetStateProperty.all(
+                Colors.grey.withOpacity(0.03),
+              ), // Fondo cabecera
+              headingTextStyle: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade700,
+                fontSize: 13,
+              ),
+              dataTextStyle: const TextStyle(fontSize: 13, color: Colors.black),
+              border: TableBorder.all(
+                color: Colors.grey.shade200,
+                width: 1,
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                style:
+                    BorderStyle.none, //comentar esta línea para mostrar bordes
+              ),
+              columns: const [
+                DataColumn(label: Text('Código')),
+                DataColumn(label: Text('Tipo')),
+                DataColumn(label: Text('Empleado')),
+                DataColumn(label: Text('Período')),
+                DataColumn(label: Text('Empresa/Sucursal')),
+                DataColumn(label: Text('Solicitado:')),
+                DataColumn(label: Text('Estado')),
+                DataColumn(label: Text('Acciones')),
+              ],
+              rows:
+                  _filteredRequests
+                      .map((request) => _buildDataRow(request))
+                      .toList(),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -227,9 +238,9 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
         CircleAvatar(
           radius: 16,
           backgroundColor: AppColors.primaryPurple.withOpacity(0.1),
-          child: Icon(icon, size: 16, color: AppColors.primaryPurple),
+          child: Icon(icon, size: 16, color: Colors.blueAccent.shade700),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -274,41 +285,43 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
   Widget _buildActionsCell(RequestData request) {
     return Row(
       children: [
-        TextButton(
-          onPressed: () {
+        InkWell(
+          onTap: () {
             /* TODO: Ver detalles */
           },
-          style: TextButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            minimumSize: Size.zero,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            visualDensity: VisualDensity.compact,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Ver detalles',
-                style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
-              ),
-              const SizedBox(width: 4),
-              Icon(
-                LucideIcons.arrowRight,
-                size: 14,
-                color: Colors.grey.shade700,
-              ),
-            ],
+
+          child: Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey.shade300, width: 0.5),
+              color: const Color.fromARGB(36, 192, 189, 189),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Ver detalles',
+                  style: TextStyle(fontSize: 13, color: Colors.black),
+                ),
+                const SizedBox(width: 4),
+                Icon(LucideIcons.arrowRight, size: 14, color: Colors.black),
+              ],
+            ),
           ),
         ),
         const SizedBox(width: 8),
         PopupMenuButton<String>(
+          padding: EdgeInsets.zero,
+          color: Colors.white,
           icon: Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade300),
+              border: Border.all(color: Colors.grey.shade300, width: 0.5),
+              color: const Color.fromARGB(36, 192, 189, 189),
               borderRadius: BorderRadius.circular(4),
             ),
-            child: const Icon(LucideIcons.plus, size: 16, color: Colors.grey),
+            child: const Icon(LucideIcons.plus, size: 16, color: Colors.black),
           ),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           itemBuilder:
