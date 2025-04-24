@@ -66,7 +66,6 @@ class SuccessResultModalWidget extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            // Título de resultado
             Text(
               '¡${title}!',
               style: TextStyle(
@@ -78,7 +77,6 @@ class SuccessResultModalWidget extends StatelessWidget {
 
             const SizedBox(height: 8),
 
-            // Mensaje de resultado
             Text(
               message,
               textAlign: TextAlign.center,
@@ -87,15 +85,12 @@ class SuccessResultModalWidget extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // Botón Aceptar
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: onAccept,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(
-                    0xFF6C5DD3,
-                  ), // Púrpura para botón Aceptar
+                  backgroundColor: Colors.blue,
                   elevation: 0,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),

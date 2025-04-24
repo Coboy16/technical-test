@@ -8,13 +8,13 @@ class ConfirmActionModalWidget extends StatelessWidget {
   final VoidCallback onConfirm;
 
   const ConfirmActionModalWidget({
-    Key? key,
+    super.key,
     required this.message,
     required this.confirmButtonColor,
     required this.confirmButtonText,
     required this.onCancel,
     required this.onConfirm,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,6 @@ class ConfirmActionModalWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Encabezado con título y botón de cerrar
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -55,7 +54,6 @@ class ConfirmActionModalWidget extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            // Mensaje de confirmación
             Text(
               message,
               style: const TextStyle(fontSize: 14, color: Color(0xFF757575)),
@@ -63,7 +61,6 @@ class ConfirmActionModalWidget extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // Botones de acción
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -85,7 +82,6 @@ class ConfirmActionModalWidget extends StatelessWidget {
 
                 const SizedBox(width: 8),
 
-                // Botón de Confirmación (color personalizable)
                 ElevatedButton(
                   onPressed: onConfirm,
                   style: ElevatedButton.styleFrom(

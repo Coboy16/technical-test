@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:technical_test/presentation/feactures/requests/temp/mock_data.dart';
 
-// Asegúrate de importar tu modelo de datos
-
 class ApproveRequestModalWidget extends StatefulWidget {
   final RequestData request;
   final Function(String?) onApprove;
@@ -46,7 +44,6 @@ class _ApproveRequestModalWidgetState extends State<ApproveRequestModalWidget> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Encabezado con título y botón de cerrar
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -131,7 +128,6 @@ class _ApproveRequestModalWidgetState extends State<ApproveRequestModalWidget> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                // Botón Cancelar
                 TextButton(
                   onPressed: widget.onCancel,
                   style: TextButton.styleFrom(
@@ -159,9 +155,7 @@ class _ApproveRequestModalWidgetState extends State<ApproveRequestModalWidget> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(
-                      0xFF00C48C,
-                    ), // Verde para aprobar
+                    backgroundColor: const Color(0xFF00C48C),
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,

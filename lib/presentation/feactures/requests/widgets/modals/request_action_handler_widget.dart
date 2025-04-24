@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:technical_test/presentation/feactures/requests/temp/mock_data.dart';
 import 'package:technical_test/presentation/feactures/requests/widgets/widgets.dart';
 
-// Asegúrate de importar tu modelo de datos y widgets modales
-
 class RequestActionHandler {
   // Método para mostrar flujo de aprobación
   static void showApprovalFlow({
@@ -11,7 +9,6 @@ class RequestActionHandler {
     required RequestData request,
     required Function(RequestData, String?) onApproveComplete,
   }) {
-    // Paso 1: Mostrar modal de aprobación
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -19,10 +16,8 @@ class RequestActionHandler {
         return ApproveRequestModalWidget(
           request: request,
           onApprove: (comments) {
-            // Cerrar el primer modal
             Navigator.of(context).pop();
 
-            // Paso 2: Mostrar confirmación
             showDialog(
               context: context,
               barrierDismissible: false,
@@ -118,9 +113,7 @@ class RequestActionHandler {
                           title: 'Rechazo exitoso',
                           message:
                               'La solicitud ha sido rechazada correctamente.',
-                          iconColor: const Color(
-                            0xFFFF5252,
-                          ), // Rojo para éxito en rechazo
+                          iconColor: const Color(0xFFFF5252),
                           onAccept: () {
                             Navigator.of(context).pop();
                             onRejectComplete(request, reason);

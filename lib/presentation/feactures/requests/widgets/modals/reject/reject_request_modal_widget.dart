@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:technical_test/presentation/feactures/requests/temp/mock_data.dart';
 
-// Asegúrate de importar tu modelo de datos
-
 class RejectRequestModalWidget extends StatefulWidget {
   final RequestData request;
   final Function(String) onReject;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:technical_test/presentation/feactures/requests/temp/mock_data.dart';
+import 'package:technical_test/presentation/feactures/requests/utils/utils.dart';
 import 'package:technical_test/presentation/feactures/requests/widgets/widgets.dart';
 import 'package:technical_test/presentation/resources/resources.dart';
 
@@ -388,13 +389,12 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
                 break;
 
               case 'Aprobar solicitud':
-                // Mostrar flujo de aprobación con datos estáticos
-                _showApprovalFlow(context, request);
+                // Mostrar flujo de aprobación
+                showApprovalFlow(context, request);
                 break;
 
               case 'Rechazar solicitud':
-                // Mostrar flujo de rechazo con datos estáticos
-                _showRejectionFlow(context, request);
+                showRejectionFlow(context, request);
                 break;
             }
           },
@@ -406,142 +406,8 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
   }
 
   //TODO: mejorar
-  void _showApprovalFlow(BuildContext context, RequestData request) {
-    // Paso 1: Mostrar modal de aprobación
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return ApproveRequestModalWidget(
-          request: request,
-          onApprove: (comments) {
-            // Cerrar el primer modal
-            Navigator.of(context).pop();
 
-            // Paso 2: Mostrar confirmación
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) {
-                return ConfirmActionModalWidget(
-                  message:
-                      '¿Está completamente seguro de que desea aprobar esta solicitud? Esta acción no se puede deshacer.',
-                  confirmButtonColor: Colors.green,
-                  confirmButtonText: 'Confirmar',
-                  onCancel: () {
-                    Navigator.of(context).pop();
-                  },
-                  onConfirm: () {
-                    // Cerrar modal de confirmación
-                    Navigator.of(context).pop();
-
-                    // Paso 3: Mostrar resultado exitoso
-                    showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return SuccessResultModalWidget(
-                          title: 'Aprobación exitosa',
-                          message:
-                              'La solicitud ha sido aprobada correctamente.',
-                          iconColor: Colors.green,
-                          onAccept: () {
-                            Navigator.of(context).pop();
-                            // Mostrar mensaje de confirmación
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Solicitud de ${request.employeeName} aprobada',
-                                ),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-            );
-          },
-          onCancel: () {
-            Navigator.of(context).pop();
-          },
-        );
-      },
-    );
-  }
-
-  // Función simplificada para mostrar el flujo de rechazo
-  void _showRejectionFlow(BuildContext context, RequestData request) {
-    // Paso 1: Mostrar modal de rechazo
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return RejectRequestModalWidget(
-          request: request,
-          onReject: (reason) {
-            // Cerrar el primer modal
-            Navigator.of(context).pop();
-
-            // Paso 2: Mostrar confirmación
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) {
-                return ConfirmActionModalWidget(
-                  message:
-                      '¿Está completamente seguro de que desea rechazar esta solicitud? Esta acción no se puede deshacer.',
-                  confirmButtonColor: Colors.red,
-                  confirmButtonText: 'Confirmar',
-                  onCancel: () {
-                    Navigator.of(context).pop();
-                  },
-                  onConfirm: () {
-                    // Cerrar modal de confirmación
-                    Navigator.of(context).pop();
-
-                    // Paso 3: Mostrar resultado exitoso
-                    showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return SuccessResultModalWidget(
-                          title: 'Rechazo exitoso',
-                          message:
-                              'La solicitud ha sido rechazada correctamente.',
-                          iconColor: Colors.red,
-                          onAccept: () {
-                            Navigator.of(context).pop();
-                            // Mostrar mensaje de confirmación
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Solicitud de ${request.employeeName} rechazada',
-                                ),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-            );
-          },
-          onCancel: () {
-            Navigator.of(context).pop();
-          },
-        );
-      },
-    );
-  }
-
-  // Helper para construir los items del menú (sin cambios)
+  // Helper para construir los items del menú
   PopupMenuItem<String> _buildMenuItem({
     required IconData icon,
     required String text,
