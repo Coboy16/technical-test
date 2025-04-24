@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class SuccessResultModal extends StatelessWidget {
+class SuccessResultModalWidget extends StatelessWidget {
   final String title;
   final String message;
   final Color iconColor;
   final VoidCallback onAccept;
 
-  const SuccessResultModal({
+  const SuccessResultModalWidget({
     super.key,
     required this.title,
     required this.message,
@@ -39,7 +39,7 @@ class SuccessResultModal extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.green,
+                    color: Color(0xFF333333),
                   ),
                 ),
                 IconButton(
@@ -82,7 +82,7 @@ class SuccessResultModal extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 14, color: Colors.grey),
+              style: const TextStyle(fontSize: 14, color: Color(0xFF757575)),
             ),
 
             const SizedBox(height: 24),
@@ -93,7 +93,9 @@ class SuccessResultModal extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: onAccept,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: const Color(
+                    0xFF6C5DD3,
+                  ), // Púrpura para botón Aceptar
                   elevation: 0,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),

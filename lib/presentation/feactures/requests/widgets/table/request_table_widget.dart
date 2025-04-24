@@ -348,12 +348,196 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
                 ),
               ],
           onSelected: (value) {
-            /* TODO: Manejar acción */
+            // Manejar las acciones seleccionadas del menú
+            switch (value) {
+              case 'Editar solicitud':
+                // Simplemente mostrar un mensaje para el prototipo
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Editar solicitud ${request.code}')),
+                );
+                break;
+
+              case 'Descargar PDF':
+                // Mostrar diálogo de descarga simulada
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: Row(
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(width: 16),
+                          Text("Generando PDF..."),
+                        ],
+                      ),
+                    );
+                  },
+                );
+
+                // Simular descarga con un retraso
+                Future.delayed(Duration(seconds: 2), () {
+                  Navigator.of(context).pop(); // Cerrar diálogo
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('PDF descargado correctamente'),
+                      backgroundColor: AppColors.primaryPurple,
+                    ),
+                  );
+                });
+                break;
+
+              case 'Aprobar solicitud':
+                // Mostrar flujo de aprobación con datos estáticos
+                _showApprovalFlow(context, request);
+                break;
+
+              case 'Rechazar solicitud':
+                // Mostrar flujo de rechazo con datos estáticos
+                _showRejectionFlow(context, request);
+                break;
+            }
           },
           offset: const Offset(0, 30),
           elevation: 2,
         ),
       ],
+    );
+  }
+
+  //TODO: mejorar
+  void _showApprovalFlow(BuildContext context, RequestData request) {
+    // Paso 1: Mostrar modal de aprobación
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return ApproveRequestModalWidget(
+          request: request,
+          onApprove: (comments) {
+            // Cerrar el primer modal
+            Navigator.of(context).pop();
+
+            // Paso 2: Mostrar confirmación
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return ConfirmActionModalWidget(
+                  message:
+                      '¿Está completamente seguro de que desea aprobar esta solicitud? Esta acción no se puede deshacer.',
+                  confirmButtonColor: Colors.green,
+                  confirmButtonText: 'Confirmar',
+                  onCancel: () {
+                    Navigator.of(context).pop();
+                  },
+                  onConfirm: () {
+                    // Cerrar modal de confirmación
+                    Navigator.of(context).pop();
+
+                    // Paso 3: Mostrar resultado exitoso
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return SuccessResultModalWidget(
+                          title: 'Aprobación exitosa',
+                          message:
+                              'La solicitud ha sido aprobada correctamente.',
+                          iconColor: Colors.green,
+                          onAccept: () {
+                            Navigator.of(context).pop();
+                            // Mostrar mensaje de confirmación
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Solicitud de ${request.employeeName} aprobada',
+                                ),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            );
+          },
+          onCancel: () {
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    );
+  }
+
+  // Función simplificada para mostrar el flujo de rechazo
+  void _showRejectionFlow(BuildContext context, RequestData request) {
+    // Paso 1: Mostrar modal de rechazo
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return RejectRequestModalWidget(
+          request: request,
+          onReject: (reason) {
+            // Cerrar el primer modal
+            Navigator.of(context).pop();
+
+            // Paso 2: Mostrar confirmación
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return ConfirmActionModalWidget(
+                  message:
+                      '¿Está completamente seguro de que desea rechazar esta solicitud? Esta acción no se puede deshacer.',
+                  confirmButtonColor: Colors.red,
+                  confirmButtonText: 'Confirmar',
+                  onCancel: () {
+                    Navigator.of(context).pop();
+                  },
+                  onConfirm: () {
+                    // Cerrar modal de confirmación
+                    Navigator.of(context).pop();
+
+                    // Paso 3: Mostrar resultado exitoso
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return SuccessResultModalWidget(
+                          title: 'Rechazo exitoso',
+                          message:
+                              'La solicitud ha sido rechazada correctamente.',
+                          iconColor: Colors.red,
+                          onAccept: () {
+                            Navigator.of(context).pop();
+                            // Mostrar mensaje de confirmación
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Solicitud de ${request.employeeName} rechazada',
+                                ),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            );
+          },
+          onCancel: () {
+            Navigator.of(context).pop();
+          },
+        );
+      },
     );
   }
 

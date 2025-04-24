@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:technical_test/presentation/feactures/requests/temp/mock_data.dart';
-import 'package:technical_test/presentation/feactures/requests/widgets/modals/reject/reject_request_modal_widget.dart';
-import 'package:technical_test/presentation/feactures/requests/widgets/modals/susses/approve_request_modal_widget.dart';
-import 'package:technical_test/presentation/feactures/requests/widgets/modals/susses/confirm_action_modal_widget.dart';
-import 'package:technical_test/presentation/feactures/requests/widgets/modals/susses/success_result_modal_widget.dart';
+import 'package:technical_test/presentation/feactures/requests/widgets/widgets.dart';
+
+// Asegúrate de importar tu modelo de datos y widgets modales
 
 class RequestActionHandler {
   // Método para mostrar flujo de aprobación
@@ -17,9 +16,9 @@ class RequestActionHandler {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return ApproveRequestModal(
+        return ApproveRequestModalWidget(
           request: request,
-          onApprove: (request, comments) {
+          onApprove: (comments) {
             // Cerrar el primer modal
             Navigator.of(context).pop();
 
@@ -28,10 +27,12 @@ class RequestActionHandler {
               context: context,
               barrierDismissible: false,
               builder: (BuildContext context) {
-                return ConfirmActionModal(
+                return ConfirmActionModalWidget(
                   message:
                       '¿Está completamente seguro de que desea aprobar esta solicitud? Esta acción no se puede deshacer.',
-                  confirmButtonColor: Colors.blue,
+                  confirmButtonColor: const Color(
+                    0xFF00C48C,
+                  ), // Verde para aprobar
                   confirmButtonText: 'Confirmar',
                   onCancel: () {
                     Navigator.of(context).pop();
@@ -45,11 +46,13 @@ class RequestActionHandler {
                       context: context,
                       barrierDismissible: false,
                       builder: (BuildContext context) {
-                        return SuccessResultModal(
+                        return SuccessResultModalWidget(
                           title: 'Aprobación exitosa',
                           message:
                               'La solicitud ha sido aprobada correctamente.',
-                          iconColor: Colors.green,
+                          iconColor: const Color(
+                            0xFF00C48C,
+                          ), // Verde para éxito en aprobación
                           onAccept: () {
                             Navigator.of(context).pop();
                             onApproveComplete(request, comments);
@@ -81,9 +84,9 @@ class RequestActionHandler {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return RejectRequestModal(
+        return RejectRequestModalWidget(
           request: request,
-          onReject: (request, reason) {
+          onReject: (reason) {
             // Cerrar el primer modal
             Navigator.of(context).pop();
 
@@ -92,10 +95,12 @@ class RequestActionHandler {
               context: context,
               barrierDismissible: false,
               builder: (BuildContext context) {
-                return ConfirmActionModal(
+                return ConfirmActionModalWidget(
                   message:
                       '¿Está completamente seguro de que desea rechazar esta solicitud? Esta acción no se puede deshacer.',
-                  confirmButtonColor: Colors.red,
+                  confirmButtonColor: const Color(
+                    0xFFFF5252,
+                  ), // Rojo para rechazar
                   confirmButtonText: 'Confirmar',
                   onCancel: () {
                     Navigator.of(context).pop();
@@ -109,11 +114,13 @@ class RequestActionHandler {
                       context: context,
                       barrierDismissible: false,
                       builder: (BuildContext context) {
-                        return SuccessResultModal(
+                        return SuccessResultModalWidget(
                           title: 'Rechazo exitoso',
                           message:
                               'La solicitud ha sido rechazada correctamente.',
-                          iconColor: Colors.red,
+                          iconColor: const Color(
+                            0xFFFF5252,
+                          ), // Rojo para éxito en rechazo
                           onAccept: () {
                             Navigator.of(context).pop();
                             onRejectComplete(request, reason);

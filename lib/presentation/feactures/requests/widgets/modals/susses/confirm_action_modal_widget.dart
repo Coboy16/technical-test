@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-class ConfirmActionModal extends StatelessWidget {
+class ConfirmActionModalWidget extends StatelessWidget {
   final String message;
   final Color confirmButtonColor;
   final String confirmButtonText;
   final VoidCallback onCancel;
   final VoidCallback onConfirm;
 
-  const ConfirmActionModal({
-    super.key,
+  const ConfirmActionModalWidget({
+    Key? key,
     required this.message,
     required this.confirmButtonColor,
     required this.confirmButtonText,
     required this.onCancel,
     required this.onConfirm,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class ConfirmActionModal extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Color(0xFF333333),
                   ),
                 ),
                 IconButton(
@@ -58,7 +58,7 @@ class ConfirmActionModal extends StatelessWidget {
             // Mensaje de confirmación
             Text(
               message,
-              style: const TextStyle(fontSize: 14, color: Colors.grey),
+              style: const TextStyle(fontSize: 14, color: Color(0xFF757575)),
             ),
 
             const SizedBox(height: 20),
@@ -75,11 +75,11 @@ class ConfirmActionModal extends StatelessWidget {
                       horizontal: 16,
                       vertical: 10,
                     ),
-                    backgroundColor: Colors.red,
+                    backgroundColor: const Color(0xFFF5F5F5),
                   ),
                   child: const Text(
                     'Cancelar',
-                    style: TextStyle(color: Colors.white, fontSize: 14),
+                    style: TextStyle(color: Color(0xFF757575), fontSize: 14),
                   ),
                 ),
 
