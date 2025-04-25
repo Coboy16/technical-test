@@ -1,16 +1,12 @@
-# technical_test
+# Technical Test - Flutter Web
 
-A new Flutter project.
+Un proyecto de prueba técnica desarrollado con Flutter para web.
 
-## Getting Started
+## Demo en vivo
 
-This project is a starting point for a Flutter application.
+Puedes ver una demostración en vivo del proyecto aquí:
+[Ver Demo](https://coboy16.github.io/technical-test/)
 
-A few resources to get you started if this is your first Flutter project:
+## Capturas de pantalla
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Captura de pantalla de la aplicación](/assets/screenshot.png)
