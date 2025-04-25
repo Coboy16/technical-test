@@ -27,4 +27,7 @@ export './new_request/select_request_type_dialog._widget.dart';
 //loafing
 export './loading/requests_content_loading_widegt.dart';
 
+//notifications
+export './notifications/notification_dropdown_widget.dart';
+
 export './status_bage_widget.dart';
