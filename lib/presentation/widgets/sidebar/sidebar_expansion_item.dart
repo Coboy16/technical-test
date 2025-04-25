@@ -131,63 +131,53 @@ class _SidebarExpansionItemState extends State<SidebarExpansionItem>
                   top: itemVerticalPadding,
                   bottom: itemVerticalPadding,
                 ),
-                child: ClipRect(
-                  // Añadimos ClipRect para evitar overflow
-                  child: Stack(
-                    clipBehavior:
-                        Clip.hardEdge, // Forzamos clip para prevenir overflow
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(widget.icon, color: iconColor, size: 20),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Text(
-                              widget.title,
-                              style: textStyle.copyWith(color: textColor),
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(widget.icon, color: iconColor, size: 20),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            widget.title,
+                            style: textStyle.copyWith(color: textColor),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(width: 8),
-                          RotationTransition(
-                            turns: Tween(
-                              begin: 0.0,
-                              end: 0.25,
-                            ).animate(_expandAnimation),
-                            child: Icon(
-                              LucideIcons.chevronRight,
-                              size: 18,
-                              color: chevronColor,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(width: 8),
+                        Icon(
+                          _isExpanded
+                              ? LucideIcons.chevronUp
+                              : LucideIcons.chevronDown,
+                          size: 18,
+                          color: chevronColor,
+                        ),
+                      ],
+                    ),
 
-                      if (widget.isParentSelected)
-                        Positioned(
-                          left: indicatorLeftPos,
-                          top: -itemVerticalPadding,
-                          bottom: -itemVerticalPadding,
-                          child: Container(
-                            width: indicatorWidth,
-                            decoration: const BoxDecoration(
-                              color: selectedItemColor,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(borderRadius),
-                                bottomLeft: Radius.circular(borderRadius),
-                              ),
+                    if (widget.isParentSelected)
+                      Positioned(
+                        left: indicatorLeftPos,
+                        top: -itemVerticalPadding,
+                        bottom: -itemVerticalPadding,
+                        child: Container(
+                          width: indicatorWidth,
+                          decoration: const BoxDecoration(
+                            color: selectedItemColor,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(borderRadius),
+                              bottomLeft: Radius.circular(borderRadius),
                             ),
                           ),
                         ),
-                    ],
-                  ),
+                      ),
+                  ],
                 ),
               ),
             ),
           ),
         ),
-
         // Usamos SizeTransition para una animación más eficiente
         ClipRect(
           child: SizeTransition(

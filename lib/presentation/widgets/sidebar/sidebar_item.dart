@@ -22,7 +22,6 @@ class SidebarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color iconColor = Colors.white;
 
-    // Mantenemos el código original
     isChild
         ? (parentHorizontalPadding + itemHorizontalPadding)
         : parentHorizontalPadding;
@@ -63,45 +62,41 @@ class SidebarItem extends StatelessWidget {
                   top: itemVerticalPadding,
                   bottom: itemVerticalPadding,
                 ),
-                child: ClipRect(
-                  // Añadimos ClipRect para evitar overflow
-                  child: Stack(
-                    clipBehavior:
-                        Clip.hardEdge, // Forzamos clip para prevenir overflow
-                    children: [
-                      Row(
-                        children: [
-                          Icon(icon, color: iconColor, size: 20),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Text(
-                              title,
-                              style: AppTextStyles.subtitle,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                            ),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(icon, color: iconColor, size: 20),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            title,
+                            style: AppTextStyles.subtitle,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
 
-                      if (isSelected)
-                        Positioned(
-                          left: -19,
-                          top: -itemVerticalPadding,
-                          bottom: -itemVerticalPadding,
-                          child: Container(
-                            width: indicatorWidth,
-                            decoration: const BoxDecoration(
-                              color: selectedItemColor,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(borderRadius),
-                                bottomLeft: Radius.circular(borderRadius),
-                              ),
+                    if (isSelected)
+                      Positioned(
+                        left: -19,
+                        top: -itemVerticalPadding,
+                        bottom: -itemVerticalPadding,
+                        child: Container(
+                          width: indicatorWidth,
+                          decoration: const BoxDecoration(
+                            color: selectedItemColor,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(borderRadius),
+                              bottomLeft: Radius.circular(borderRadius),
                             ),
                           ),
                         ),
-                    ],
-                  ),
+                      ),
+                  ],
                 ),
               ),
             ),
