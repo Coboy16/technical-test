@@ -18,12 +18,41 @@ class RequestsTableArea extends StatefulWidget {
 class _RequestsTableAreaState extends State<RequestsTableArea> {
   int _selectedTabIndex = 0; // 0: Todas, 1: Pendientes, etc.
   bool _isListView = true;
+  DateTime? _startDate;
+  DateTime? _endDate;
 
   @override
   void initState() {
     super.initState();
     // Cargar las solicitudes iniciales en el bloc
     context.read<RequestFilterBloc>().add(LoadInitialRequests(dummyRequests));
+  }
+
+  Future<void> _showDateRangePicker(BuildContext context) async {
+    // Puedes pasar las fechas actuales si ya hay alguna seleccionada
+    final picked = await showDialog<DateTimeRange>(
+      // Espera un DateTimeRange si habilitas la devolución
+      context: context,
+      builder: (BuildContext context) {
+        // Pasa las fechas seleccionadas actuales al popup
+        return DateRangePickerPopup(
+          initialStartDate: _startDate,
+          initialEndDate: _endDate,
+          // Puedes forzar el mes inicial si quieres
+          // initialMonth: DateTime(2025, 4),
+        );
+      },
+    );
+
+    // --- Procesar el resultado (si habilitas la devolución de datos) ---
+    if (picked != null) {
+      setState(() {
+        _startDate = picked.start;
+        _endDate = picked.end;
+        print('Rango seleccionado: $_startDate - $_endDate');
+        // Aquí actualizarías tu UI o harías lo que necesites con las fechas
+      });
+    }
   }
 
   @override
@@ -71,7 +100,9 @@ class _RequestsTableAreaState extends State<RequestsTableArea> {
                       _isListView = isListView;
                     });
                   },
-                  onFilterByDate: () {},
+                  onFilterByDate: () {
+                    _showDateRangePicker(context);
+                  },
                   onDownload: () {},
                 ),
               ],

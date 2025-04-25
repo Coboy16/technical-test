@@ -29,13 +29,29 @@ class SidebarExpansionItem extends StatefulWidget {
   State<SidebarExpansionItem> createState() => _SidebarExpansionItemState();
 }
 
-class _SidebarExpansionItemState extends State<SidebarExpansionItem> {
+class _SidebarExpansionItemState extends State<SidebarExpansionItem>
+    with SingleTickerProviderStateMixin {
   late bool _isExpanded;
+  late AnimationController _controller;
+  late Animation<double> _expandAnimation;
 
   @override
   void initState() {
     super.initState();
     _isExpanded = widget.forceExpanded ?? widget.initiallyExpanded;
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 80), // Más rápida
+      vsync: this,
+    );
+    _expandAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+      reverseCurve: Curves.easeInCubic,
+    );
+
+    if (_isExpanded) {
+      _controller.value = 1.0;
+    }
   }
 
   @override
@@ -44,6 +60,11 @@ class _SidebarExpansionItemState extends State<SidebarExpansionItem> {
     if (widget.forceExpanded != null && widget.forceExpanded != _isExpanded) {
       setState(() {
         _isExpanded = widget.forceExpanded!;
+        if (_isExpanded) {
+          _controller.forward();
+        } else {
+          _controller.reverse();
+        }
       });
     }
     if (widget.isParentSelected != oldWidget.isParentSelected) {
@@ -51,9 +72,20 @@ class _SidebarExpansionItemState extends State<SidebarExpansionItem> {
     }
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   void _toggleExpansion() {
     setState(() {
       _isExpanded = !_isExpanded;
+      if (_isExpanded) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
     });
   }
 
@@ -99,63 +131,70 @@ class _SidebarExpansionItemState extends State<SidebarExpansionItem> {
                   top: itemVerticalPadding,
                   bottom: itemVerticalPadding,
                 ),
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(widget.icon, color: iconColor, size: 20),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Text(
-                            widget.title,
-                            style: textStyle.copyWith(color: textColor),
-                            overflow: TextOverflow.ellipsis,
+                child: ClipRect(
+                  // Añadimos ClipRect para evitar overflow
+                  child: Stack(
+                    clipBehavior:
+                        Clip.hardEdge, // Forzamos clip para prevenir overflow
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(widget.icon, color: iconColor, size: 20),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              widget.title,
+                              style: textStyle.copyWith(color: textColor),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Icon(
-                          _isExpanded
-                              ? LucideIcons.chevronUp
-                              : LucideIcons.chevronDown,
-                          size: 18,
-                          color: chevronColor,
-                        ),
-                      ],
-                    ),
+                          const SizedBox(width: 8),
+                          RotationTransition(
+                            turns: Tween(
+                              begin: 0.0,
+                              end: 0.25,
+                            ).animate(_expandAnimation),
+                            child: Icon(
+                              LucideIcons.chevronRight,
+                              size: 18,
+                              color: chevronColor,
+                            ),
+                          ),
+                        ],
+                      ),
 
-                    if (widget.isParentSelected)
-                      Positioned(
-                        left: indicatorLeftPos,
-                        top: -itemVerticalPadding,
-                        bottom: -itemVerticalPadding,
-                        child: Container(
-                          width: indicatorWidth,
-                          decoration: const BoxDecoration(
-                            color: selectedItemColor,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(borderRadius),
-                              bottomLeft: Radius.circular(borderRadius),
+                      if (widget.isParentSelected)
+                        Positioned(
+                          left: indicatorLeftPos,
+                          top: -itemVerticalPadding,
+                          bottom: -itemVerticalPadding,
+                          child: Container(
+                            width: indicatorWidth,
+                            decoration: const BoxDecoration(
+                              color: selectedItemColor,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(borderRadius),
+                                bottomLeft: Radius.circular(borderRadius),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
 
-        AnimatedCrossFade(
-          firstChild: Container(),
-          secondChild: ExpansionTileChildrenWrapper(children: widget.children),
-          crossFadeState:
-              _isExpanded
-                  ? CrossFadeState.showSecond
-                  : CrossFadeState.showFirst,
-          duration: const Duration(milliseconds: 200),
-          sizeCurve: Curves.easeInOut,
+        // Usamos SizeTransition para una animación más eficiente
+        ClipRect(
+          child: SizeTransition(
+            axisAlignment: -1,
+            sizeFactor: _expandAnimation,
+            child: ExpansionTileChildrenWrapper(children: widget.children),
+          ),
         ),
       ],
     );

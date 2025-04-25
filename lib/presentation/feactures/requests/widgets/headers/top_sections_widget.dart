@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:technical_test/presentation/feactures/requests/widgets/widgets.dart';
 import 'package:technical_test/presentation/resources/resources.dart';
 
 class TopSection extends StatelessWidget {
@@ -35,8 +36,8 @@ class TopSection extends StatelessWidget {
           child: ElevatedButton.icon(
             icon: const Icon(LucideIcons.plus, size: 18),
             label: const Text('Nueva Solicitud'),
-            onPressed: () {
-              // TODO: Implementar lógica para abrir modal/página de nueva solicitud
+            onPressed: () async {
+              await showSelectRequestTypeDialog(context);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.sidebarBackground,
@@ -49,6 +50,17 @@ class TopSection extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Future<String?> showSelectRequestTypeDialog(BuildContext context) {
+    return showDialog<String>(
+      // Espera recibir un String (el typeId) al cerrar
+      context: context,
+      barrierDismissible: true, // Permite cerrar tocando fuera
+      builder: (BuildContext context) {
+        return const SelectRequestTypeDialog();
+      },
     );
   }
 

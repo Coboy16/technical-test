@@ -46,7 +46,7 @@ class HeaderWidget extends StatelessWidget implements PreferredSizeWidget {
           const SizedBox(width: 16),
           const CircleAvatar(
             radius: 18,
-            backgroundColor: Colors.deepPurpleAccent,
+            backgroundColor: Colors.indigo,
             child: Text(
               'JP',
               style: TextStyle(

@@ -21,7 +21,7 @@ class UserInfo extends StatelessWidget {
           children: [
             const CircleAvatar(
               radius: 24,
-              backgroundColor: Colors.deepPurpleAccent,
+              backgroundColor: Colors.indigo,
               child: Text(
                 'JP',
                 style: TextStyle(

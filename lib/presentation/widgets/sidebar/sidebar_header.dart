@@ -36,24 +36,23 @@ class SidebarHeaderWithToggle extends StatelessWidget {
                 .clamp(
                   0.0,
                   parentHorizontalPadding / 2,
-                ), // Animate padding safely
+                ), // Mantenemos el cálculo original para preservar la UI
       ),
-      // IMPORTANT: Clip the content of the header
+      // Mantenemos ClipRect para evitar overflow
       child: ClipRect(
         child: AnimatedSwitcher(
           duration: const Duration(
-            milliseconds: 150,
-          ), // Faster switch for header
+            milliseconds: 120,
+          ), // Más rápido que el original
           transitionBuilder: (Widget child, Animation<double> animation) {
             return FadeTransition(opacity: animation, child: child);
           },
           layoutBuilder: (currentChild, previousChildren) {
             return Stack(
+              clipBehavior: Clip.hardEdge, // Prevenir overflow
               alignment: Alignment.centerLeft,
               children: <Widget>[
-                ...previousChildren.map(
-                  (child) => Positioned(child: child),
-                ), // Use positioned to prevent layout shifts in stack
+                ...previousChildren.map((child) => Positioned(child: child)),
                 if (currentChild != null) currentChild,
               ],
             );
@@ -90,8 +89,8 @@ class SidebarHeaderWithToggle extends StatelessWidget {
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
+                          overflow:
+                              TextOverflow.ellipsis, // Mejor manejo de espacio
                         ),
                       ),
                       const Spacer(),
@@ -111,10 +110,8 @@ class SidebarHeaderWithToggle extends StatelessWidget {
                   : Container(
                     key: const ValueKey('collapsed_header'),
                     alignment: Alignment.center,
-                    // Ensure collapsed button takes minimal but defined space
-                    width:
-                        collapsedSidebarWidth -
-                        (parentHorizontalPadding), // Account for padding
+                    // Ancho fijo para evitar cálculos costosos
+                    width: collapsedSidebarWidth - (parentHorizontalPadding),
                     child: IconButton(
                       icon: Icon(
                         LucideIcons.chevronRight,
